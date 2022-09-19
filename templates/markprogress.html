@@ -1,0 +1,142 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+<!-- <h2>Käyttäjän koirat </h2> -->
+
+<h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}}:</h2>
+
+<p></p>
+<p>
+  <p><legend>Kuittaa koulutus tehdyksi </legend></p>
+  <form action="/markprogress", method="post">
+      <label for="skill">Valitse taito:</label>
+      <select name="skill" id="skill">
+      {% for s in skills %}
+      <option value = {{s.id}}>{{s.skill}}</option> 
+      {% endfor %}
+      </select>
+      <label for="place">Valitse paikka:</label>
+      <select name="place" id="place">
+      {% for p in places %}
+      <option value = {{p.id}}>{{p.place}}</option> 
+      {% endfor %}
+      </select>
+      <label for="disturbance">Valitse häiriö:</label>
+      <select name="disturbance" id="disturbance">
+      {% for d in disturbances %}
+      <option value = {{d.id}} > {{d.disturbance}}  </option> 
+      {% endfor %}
+      </select>
+      <br><br>
+      <input type="submit" value="Kuittaa koulutus">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+
+  </p>
+
+
+
+<p>Koko koulutussuunnitelman edistyminen: {{total_progress}} %</p>
+            
+
+        <p>Edistyminen taidoittain:</p>
+
+
+        <table>
+            <tr>
+              <th>Taito</th>
+              <th>Edistyminen</th>
+            </tr>
+            
+            {% for item in progress %}
+            <tr>
+            <td>{{item.skill}}</td>
+              <td>{{item.achieved}} %</td>
+            </tr>
+              {% endfor %}
+            
+          </table> 
+
+
+
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+
+<p>Näytä koulutuksen yksityiskohdat:</p>
+<!-- this is not smart way, better would be to 
+show by skill, i.e. selection box for skill
+to be implemented if feasible
+as backup plan, this will do -->
+
+<!-- Does not work correctlty, 2 clicks required initially to view, after this ok-->
+<button onclick="showDetails()">Näytä kaikki / piilota kaikki</button>
+          
+<div id="yksityiskohdat" hidden>
+    <!-- <table>
+        <tr>
+          <th>Taito</th>
+          <th> Paikka </th>
+          <th>Häiriö</th>
+          <th>Toistoja</th>
+        </tr>
+        
+        {% for item in progress %}
+        <tr>
+        <td>{{item.skill}}</td>
+          <td>{{item.place}} %</td>
+          <td>{{item.disturbance}} %</td>
+        </tr>
+          {% endfor %}
+        
+      </table>  -->
+
+
+Tähän pitäisi tulla koko edistys
+
+      <table>
+        <tr>
+          <th>Taito</th>
+          <th> Paikka </th>
+          <th>Häiriö</th>
+          <th>Toistoja</th>
+          <th>Tavoite</th>
+        </tr>
+        
+        {% for x in plan_progress %}
+        <tr>
+        <td>{{x.skill}}</td>
+          <td>{{x.place}} </td>
+          <td>{{x.disturbance}} </td>
+          <td>{{x.repeated}} </td>
+          <td>{{x.target_repeats}} </td>
+        </tr>
+          {% endfor %}
+        
+      </table> 
+
+
+
+
+    </p>
+</div>
+          
+          
+<script>
+    function showDetails() {
+        var x = document.getElementById("yksityiskohdat");
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+    }
+          </script>
+ 
+
+
+{% endblock %}

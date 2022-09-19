@@ -1,0 +1,21 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Käyttäjä {{session.user_name}}   </h2>
+
+<p>
+Koiran valinta onnistui, valittu koira {{session.dog_name}}
+Automaattinen uudelleen ohjaus 5 sekunnissa
+
+<meta http-equiv="Refresh" content="5; url=/markprogress" />
+
+</p>
+
+ {% for dog in dogs %}
+<li><a href="/dogchoice/{{ dog.id }}">{{ dog.dogname }}</a>
+{% endfor %}
+</ul> 
+ 
+
+{% endblock %}

@@ -1,0 +1,24 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Käyttäjätunnuksen luonti</h2>
+
+<!-- This form looks horrible, must be redesigned -->
+<form action="/register" method="post">
+Tunnus: <br><input type="text" name="username" minlength="1" maxlength="20">
+<p>
+Salasana: <br><input type="password" name="password1">
+</p>
+<p>
+Salasana uudestaan: <br><input type="password" name="password2">
+</p>
+<p>
+    <input type="submit" value="Luo tunnus">
+</p>
+</form>
+
+
+<!-- <a href="/login">Palaa takaisin</a> -->
+
+{% endblock %}

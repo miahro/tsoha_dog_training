@@ -1,0 +1,5 @@
+.env
+clear_database.sql
+venv
+init_env.sh
+__pycache__

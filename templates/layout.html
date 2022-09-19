@@ -1,0 +1,37 @@
+<!doctype html>
+<link rel="stylesheet" href="/static/main.css">
+<title>Koiran koulutus - {% block title %}{% endblock %}</title>
+<h1>Koiran koulutus</h1>
+<a href="/">Etusivu </a>
+<a href="/login">Kirjautuminen </a>
+<a href="/register">Käyttäjätunnuksen luonti </a>
+<a href="/logout">Kirjaudu ulos </a>
+
+{% if session.user_name %}
+<a href="/dogs">Listaa koirat </a>
+<a href="/add_dog">Lisää koira </a>
+{% endif %}
+
+{% if session.user_name and session.dog_name %}
+<a href="/markprogress"> Raportointinäkymä </a>
+{% endif %}
+
+
+<p>
+{% if session.user_name %}
+Kirjautunut käyttäjä: {{session.user_name}}
+{% endif %}
+</p>
+
+<p>
+    {% if session.dog_name %}
+    Valittu koira: {{session.dog_name}}
+    {% endif %}
+    </p>
+    
+
+
+<hr>
+{% block content %}{% endblock %}
+<hr>
+
