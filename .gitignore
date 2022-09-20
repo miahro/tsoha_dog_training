@@ -3,3 +3,4 @@ clear_database.sql
 venv
 init_env.sh
 __pycache__
+.heroku_secret_key
