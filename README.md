@@ -2,7 +2,7 @@
 
 ## Tausta ja käyttötarkoitus ##
 
-Koiran koulutuksessa eri taidot opetaan koiralle lukuisten toistojen kautta. Koirat ovat myös paikkaspesifejä sekä häiriöherkkiä, joten pelkät toistot eivät riitä, vaan harjoituksia pitää toistaa myös eri paikoissa (esim. koti, kauppakeskus, jne.) ja eri häiriöiden (esim. äänet, toiset koirat, jne) läsnäollessa. Yleinen näkemys esimerkiksi luoksetulon harjoittelusta on, että asian oppimiseksi pitäisi koiran kanssa tehdä 20 toistoa, kahdessakymmenessä eri paikassa, ja kahdenkymmenen eri häiriötekijän läsnäollessa. Tämä tarkoittaisi siis 20*20*20=8000 toistoa tälle yhdelle perustaidolle. Koska toistojen määrä on suuri, ja erilaisia harjoiteltavia taitoja on useita, on koulutuksen seuranta hankalaa muistinvaraisesti tai esimerkiksi paperilla. Sovelluksen tarkoitus on koulutusohjelman seuranta ylläpitämällä tietoa tehdyistä harjoituksista. 
+Koiran koulutuksessa eri taidot opetaan koiralle lukuisten toistojen kautta. Koirat ovat myös paikkaspesifejä sekä häiriöherkkiä, joten pelkät toistot eivät riitä, vaan harjoituksia pitää toistaa myös eri paikoissa (esim. koti, kauppakeskus, jne.) ja eri häiriöiden (esim. äänet, toiset koirat, jne) läsnäollessa. Yleinen näkemys esimerkiksi luoksetulon harjoittelusta on, että asian oppimiseksi pitäisi koiran kanssa tehdä 20 toistoa, kahdessakymmenessä eri paikassa, ja kahdenkymmenen eri häiriötekijän läsnäollessa. Tämä tarkoittaisi siis 20 x 20 x 20=8000 toistoa tälle yhdelle perustaidolle. Koska toistojen määrä on suuri, ja erilaisia harjoiteltavia taitoja on useita, on koulutuksen seuranta hankalaa muistinvaraisesti tai esimerkiksi paperilla. Sovelluksen tarkoitus on koulutusohjelman seuranta ylläpitämällä tietoa tehdyistä harjoituksista. 
 
 ## Tärkeimmät ominaisuudet ##
 Sovelluksella on seuraavat ominaisuudet:
@@ -15,6 +15,9 @@ Sovelluksella on seuraavat ominaisuudet:
   * Käyttäjä voi kuitata koiralleen toistoja (tietty harjoitus, tietty paikka, tietty häiriö) tehdyksi
   * Käyttäjälle on olemassa raportointinäkymä, jossa voi koirakohtaisesti seurata koulutussuunnitelman edistymistä / toteutumista
 
+
+## Heroku linkki ##
+https://tsoha-dog-training.herokuapp.com/ 
 
 ## Alustava tietokanta-skeema ##
 Alustavana suunnitelmana tietokanta sisältää 7 taulua:
@@ -71,12 +74,13 @@ Sovellus on jaettu seuraaviin moduleihin:
     * KESKEN
 	
 	
-## Releasee note 0.2
+## Releasee note 0.3
 	Git-commit XX sisältää ensimmäiset versiot moduleista. Tässä vaiheessa on keskitytty koodin toiminnallisuuteen ja tietokannan toiminnallisuuteen. Päätoimintojen pitäisi toimia. Jotakuinkin toimivia osia ovat: 
   * käyttäjätunnusten luonti
   * login / logout
   * uuden koiran  luonti / lisäys
     * oletussuunnitelman lisäys uudelle koiralle
+  * Heroku release (välipalautus 2 versio)
 	
   Totetus on kesken seuraaville:
   * koulutussuunnitelman raportointinäkymä; toiminto on olemassa, ja tietokantakysely toimii, mutta raportti näyttö on aika kökkö. Päivitetään myöhemmin järkeväksi näytöksi
@@ -94,6 +98,6 @@ Toteuttamatta on:
  
   * Koulutussuunnitelman muokkaus
     * saattaaa jäädäkin toteuttamatta, mennään ehkä oletussuunnitelmalla
-  * Heroku release
+
 	
 
