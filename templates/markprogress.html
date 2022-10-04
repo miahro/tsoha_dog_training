@@ -5,6 +5,41 @@
 <h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}}:</h2>
 
 <div class="list">
+  <p>
+    <p><legend>Kuittaa koulutus tehdyksi </legend></p>
+    <p>Anna negatiivinen luku peruaksesi väärin raportoituja koulutuksia</p><br>
+    <form action="/markprogress", method="post">
+        <label for="skill">Valitse taito:</label>
+        <select name="skill" id="skill">
+        {% for s in skills %}
+        <option value = {{s.id}}>{{s.skill}}</option> 
+        {% endfor %}
+        </select>
+        <label for="place">Valitse paikka:</label>
+        <select name="place" id="place">
+        {% for p in places %}
+        <option value = {{p.id}}>{{p.place}}</option> 
+        {% endfor %}
+        </select>
+        <label for="disturbance">Valitse häiriö:</label>
+        <select name="disturbance" id="disturbance">
+        {% for d in disturbances %}
+        <option value = {{d.id}} > {{d.disturbance}}  </option> 
+        {% endfor %}
+        </select>
+        <label for="repeats">Toistojen määrä</label>
+        <input name="repeats" type="number" value="0"/>
+
+        <br><br>
+        <input type="submit" value="Kuittaa koulutus">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      </form>
+  
+    </p>
+  
+
+    <!-- original version with reporting single training per single click -->
+<!-- <div class="list"> 
 <p>
   <p><legend>Kuittaa koulutus tehdyksi </legend></p>
   <form action="/markprogress", method="post">
@@ -31,7 +66,7 @@
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
-  </p>
+  </p> -->
 
 
 <p>Koko koulutussuunnitelman edistyminen: {{total_progress}} %</p>

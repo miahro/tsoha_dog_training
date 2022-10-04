@@ -172,18 +172,40 @@ def get_disturbances(dog_id):
     return result    
 
 
-def mark_progress(plan_id):
+#ToDo item
+#otherwise ok, but need to limit negative values -> progress cannot go below 0
+def mark_progress(plan_id, repeats):
+    print(f"in module dog repeats {repeats}") #debug print remove
+    if repeats == 0:
+        return True
     try:
         sql = '''UPDATE Progress
-                SET repeated = repeated +1
+                SET repeated = repeated + :repeats
                 WHERE id=:plan_id'''
-        result = db.session.execute(sql, {"plan_id":plan_id})
+        result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
         db.session.commit()
-        print("module dog mark_progress succesful")
+        print("module dog mark_progress succesful") #debug print remove
     except:
         print("something goes wrong in module dog function mark_progress")
         return False
     return True
+
+
+#backup can be removed after sufficient testing
+#ORIGINAL VERSION OF MARKPROGRES BASED ON REPORTING COMPLETED TRAININGS ONE BY ONE
+# def mark_progress(plan_id):
+#     try:
+#         sql = '''UPDATE Progress
+#                 SET repeated = repeated +1
+#                 WHERE id=:plan_id'''
+#         result = db.session.execute(sql, {"plan_id":plan_id})
+#         db.session.commit()
+#         print("module dog mark_progress succesful")
+#     except:
+#         print("something goes wrong in module dog function mark_progress")
+#         return False
+#     return True
+
 
 def find_plan_id(dog_id, skill_id, place_id, disturbance_id):
     try:

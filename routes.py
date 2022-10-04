@@ -53,17 +53,17 @@ def register():
 
 @app.route("/dogs", methods = ["GET"])
 def dogs():
-    if not users.is_logged_in():
+    if not users.is_logged_in(): #should not be possible to call this if not logged in, but just in case
         return render_template("error.html", message="et ole kirjautunut sisään")
     else: 
         user_id = users.user_id()
-        dognames = dog.list_dogs(user_id) #this causes error if not logged in    
+        dognames = dog.list_dogs(user_id) #this causes error if not logged in     
         return render_template("dogs.html", dogs=dognames)
 
 
 @app.route("/add_dog", methods =["GET", "POST"]) 
 def add_dog():
-    if not users.is_logged_in():
+    if not users.is_logged_in(): #should not be possible to call this if not logged in, but just in case
         return render_template("error.html", message="et ole kirjautunut sisään")
     if request.method == "GET":
         return render_template("add_dog.html")
@@ -115,45 +115,46 @@ def markprogress():
         skill_id = request.form["skill"]   
         place_id = request.form["place"] 
         disturbance_id = request.form["disturbance"] 
+        repeats = request.form["repeats"]
+        print(f"repeats: {repeats}") #debug print(remove)
         total_progress = dog.get_total_progress(dog_id)
         plan_id = dog.find_plan_id(dog_id, skill_id, place_id, disturbance_id)
         skills = dog.get_skills(session["dog_id"]) #needed for reporting form
         places = dog.get_places(session["dog_id"]) #needed for reporting form
         disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
-        dog.mark_progress(plan_id)
+        dog.mark_progress(plan_id, repeats)
         plan_progress = dog.plan_progress(dog_id)
         prog = dog.get_skill_progress(dog_id)
         return render_template("/markprogress.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
 
-#ToDo
-#this should not be in use at all anymore
-#cross-check calls and remove if ok
-#@app.route("/dogprog/<int:dog_id>", methods =["GET", "POST"]) #may need POST also later - check
-#def dogprog(dog_id):
-#    print(f"app.route dogprog dog_id {dog_id}")
-#    print("app.route/dogproge should not be in use at all")
-#    print("FATAL ERROR, cross-check calls to dogprog")
-#    abort(403)
-#    session["dog_id"]=dog_id
-#    session["dog_name"]=dog.get_name(dog_id)
-#    print(dog.get_name(dog_id))
-#    if request.method == "GET":
-#        print(f"app.route dogprog dog id {dog_id}")
-#        prog = dog.get_skill_progress(dog_id)
-#        total_prog = dog.get_total_progress(dog_id)[0]
-#        print(f"total prog: {total_prog}")
-#        skills = dog.get_skills(session["dog_id"])
-#        places = dog.get_places(session["dog_id"])
-#        disturbances = dog.get_disturbances(session["dog_id"])
-
-#        return render_template("/dogprog.html", progress=prog, totalprog=total_prog,  skills=skills, places=places, disturbances=disturbances)
-#    if request.method == "POST":
-#        print("päästiin tänne dogprog")
-#        print(request.form["skill"])
-#        print(request.form["place"])
-#        print(request.form["disturbance"])
-#        skills = dog.get_skills(session["dog_id"])
-#        places = dog.get_places(session["dog_id"])
- #       disturbances = dog.get_disturbances(session["dog_id"])
-  #      return redirect("/")
-
+#backup can be removed after sufficient testing
+#ORIGINAL VERSION BASED ON REPORTING COMPLETED TRAININGS ONE BY ONE
+# @app.route("/markprogress", methods =["GET", "POST"]) 
+# def markprogress(): 
+#     if not users.is_logged_in(): 
+#         return render_template("error.html", message="et ole kirjautunut sisään")   
+#     dog_id = dog.get_dog_id()
+#     if dog_id is None:
+#         return render_template("error.html", message="koiraa ei valittu")   
+#     if request.method == "GET":
+#         skills = dog.get_skills(session["dog_id"]) #needed for reporting form
+#         places = dog.get_places(session["dog_id"]) #needed for reporting form
+#         disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
+#         prog = dog.get_skill_progress(dog_id)
+#         plan_progress = dog.plan_progress(dog_id)        
+#         total_progress = dog.get_total_progress(dog_id)
+#         return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+#     if request.method == "POST":
+#         users.csrf_check()
+#         skill_id = request.form["skill"]   
+#         place_id = request.form["place"] 
+#         disturbance_id = request.form["disturbance"] 
+#         total_progress = dog.get_total_progress(dog_id)
+#         plan_id = dog.find_plan_id(dog_id, skill_id, place_id, disturbance_id)
+#         skills = dog.get_skills(session["dog_id"]) #needed for reporting form
+#         places = dog.get_places(session["dog_id"]) #needed for reporting form
+#         disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
+#         dog.mark_progress(plan_id)
+#         plan_progress = dog.plan_progress(dog_id)
+#         prog = dog.get_skill_progress(dog_id)
+#         return render_template("/markprogress.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
