@@ -172,8 +172,7 @@ def get_disturbances(dog_id):
     return result    
 
 
-#ToDo item
-#otherwise ok, but need to limit negative values -> progress cannot go below 0
+
 def mark_progress(plan_id, repeats):
     print(f"in module dog repeats {repeats}") #debug print remove
     if repeats == 0:

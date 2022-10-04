@@ -20,9 +20,10 @@ def login():
         session["csrf_token"] = secrets.token_hex(16)
         if users.login(username, password):
             return render_template("index.html", msg="Sisäänkirjautuminen onnistui")
-#            return redirect("/", msg="Sisäänkirjautuminen onnistui")
         else:
             return render_template("error.html", message="Väärä tunnus tai salasana")
+
+
 
 @app.route("/logout")
 def logout():
@@ -38,7 +39,8 @@ def register():
         return render_template("register.html")
     if request.method == "POST": #POST to submit registration details
         username = request.form["username"]
-        if len(username) < 1 or len(username) > 20:
+#        if len(username) < 1 or len(username) > 20:
+        if not check_length(username, 1, 20):
             return render_template("/error.html", message="Tunnuksessa tulee olla 1-20 merkkiä")
         password1 = request.form["password1"]
         password2 = request.form["password2"]
@@ -126,6 +128,47 @@ def markprogress():
         disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
         prog = dog.get_skill_progress(dog_id)
         return render_template("/markprogress.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+
+@app.route("/modify_plan", methods=["GET", "POST"])
+def modify_plan():
+    if request.method =="GET":
+        print("routes.add_place with GET call") #debug print remove
+        return render_template("/modify_plan.html")
+    if request.method =="POST":
+        print("routes.add_place with POST call") #debug print remove
+        print(request.form["change_item"]) #debug print remove
+        change_item = request.form["change_item"]
+        if change_item == "skill":
+            newskill=request.form["newskill"].lower()
+            if not check_length(newskill, 1, 30):
+                return render_template("error.html",  message="Taidossa tulee olla 1-30 merkkiä")
+            else:
+                plan.add_skill(newskill)
+  #          print(request.form["newskill"])
+        elif change_item == "place":
+            newplace=request.form["newplace"].lower()
+            if not check_length(newplace, 1, 30):
+                return render_template("error.html",  message="Paikassa tulee olla 1-30 merkkiä")
+            else:
+                plan.add_place(newplace)
+ #           print(request.form["newplace"])
+        elif change_item == "disturbance":
+            newdisturbance=request.form["newdisturbance"].lower()
+            if not check_length(newdisturbance, 1, 30):
+                return render_template("error.html",  message="Häiriössä tulee olla 1-30 merkkiä")
+            else:
+                plan.add_disturbance(newdisturbance)
+
+
+#            print(request.form["newdisturbance"])
+
+        return render_template("/modify_plan.html")
+
+def check_length(text, min, max):
+    if len(text)>= min and len(text) <= max:
+        return True
+    else:
+        return False
 
 #backup can be removed after sufficient testing
 #ORIGINAL VERSION BASED ON REPORTING COMPLETED TRAININGS ONE BY ONE

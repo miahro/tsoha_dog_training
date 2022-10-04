@@ -70,3 +70,21 @@ def gen_default_progress(dog_id): #error handling must be added
     '''
     db.session.execute(sql, {"dog_id":dog_id})
     db.session.commit()
+
+#error handling?
+def add_skill(newskill):
+    sql = '''INSERT INTO Skills(skill) VALUES(:newskill) ON CONFLICT DO NOTHING;'''
+    db.session.execute(sql, {"newskill": newskill})
+    db.session.commit()
+
+#error handling?
+def add_place(newplace):
+    sql = '''INSERT INTO Places(place) VALUES(:newplace) ON CONFLICT DO NOTHING;'''
+    db.session.execute(sql, {"newplace": newplace})
+    db.session.commit()
+
+#error handling?
+def add_disturbance(newdisturbance):
+    sql = '''INSERT INTO Disturbances(disturbance) VALUES(:newdisturbance) ON CONFLICT DO NOTHING;'''
+    db.session.execute(sql, {"newdisturbance": newdisturbance})
+    db.session.commit()
