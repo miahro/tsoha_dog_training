@@ -1,21 +1,31 @@
 <!doctype html>
 <link rel="stylesheet" href="/static/main.css">
 <title>Koiran koulutus - {% block title %}{% endblock %}</title>
-<h1>Koiran koulutus</h1>
-<a href="/">Etusivu </a>
-<a href="/login">Kirjautuminen </a>
-<a href="/register">Käyttäjätunnuksen luonti </a>
-<a href="/logout">Kirjaudu ulos </a>
+<body>
 
-{% if session.user_name %}
-<a href="/dogs">Listaa koirat </a>
-<a href="/add_dog">Lisää koira </a>
-{% endif %}
+<div class="block">
 
-{% if session.user_name and session.dog_name %}
-<a href="/markprogress"> Raportointinäkymä </a>
-{% endif %}
+<div class="header">
+    <h1>Koiran koulutus</h1>
+</div>
 
+
+<nav>
+    <ul>
+        <li><a href="/">Etusivu </a></li>
+        {% if session.user_name %}
+        <li><a href="/logout">Kirjaudu ulos </a></li>
+        <li><a href="/dogs">Valitse koira </a></li>
+        <li><a href="/add_dog">Lisää koira </a></li>
+        {% else %}
+        <li><a href="/login">Kirjautuminen </a></li>
+        <li><a href="/register">Käyttäjätunnuksen luonti </a></li>
+        {% endif %}
+        {% if session.dog_name %}
+        <li><a href="markprogress">Koulutusohjelma</a></li>
+        {% endif %}
+    </ul>
+</nav>
 
 <p>
 {% if session.user_name %}
@@ -32,6 +42,8 @@ Kirjautunut käyttäjä: {{session.user_name}}
 
 
 <hr>
-{% block content %}{% endblock %}
-<hr>
 
+{% block content %}{% endblock %}
+</div>
+<hr>
+</body>

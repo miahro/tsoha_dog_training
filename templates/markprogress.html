@@ -2,11 +2,9 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<!-- <h2>Käyttäjän koirat </h2> -->
-
 <h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}}:</h2>
 
-<p></p>
+<div class="list">
 <p>
   <p><legend>Kuittaa koulutus tehdyksi </legend></p>
   <form action="/markprogress", method="post">
@@ -36,14 +34,10 @@
   </p>
 
 
-
 <p>Koko koulutussuunnitelman edistyminen: {{total_progress}} %</p>
-            
-
+          
         <p>Edistyminen taidoittain:</p>
-
-
-        <table>
+        <table style="width:50%">
             <tr>
               <th>Taito</th>
               <th>Edistyminen</th>
@@ -54,54 +48,26 @@
             <td>{{item.skill}}</td>
               <td>{{item.achieved}} %</td>
             </tr>
-              {% endfor %}
-            
+              {% endfor %}           
           </table> 
 
+</div>
 
 
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-
-<p>Näytä koulutuksen yksityiskohdat:</p>
+<p>Koulutuksen yksityiskohdat:</p>
 <!-- this is not smart way, better would be to 
 show by skill, i.e. selection box for skill
 to be implemented if feasible
 as backup plan, this will do -->
 
-<!-- Does not work correctlty, 2 clicks required initially to view, after this ok-->
 <button onclick="showDetails()">Näytä kaikki / piilota kaikki</button>
           
-<div id="yksityiskohdat" hidden>
-    <!-- <table>
+<div id="details" hidden>
+  <div class="details">
+      <table style="width:100%">
         <tr>
           <th>Taito</th>
-          <th> Paikka </th>
-          <th>Häiriö</th>
-          <th>Toistoja</th>
-        </tr>
-        
-        {% for item in progress %}
-        <tr>
-        <td>{{item.skill}}</td>
-          <td>{{item.place}} %</td>
-          <td>{{item.disturbance}} %</td>
-        </tr>
-          {% endfor %}
-        
-      </table>  -->
-
-
-Tähän pitäisi tulla koko edistys
-
-      <table>
-        <tr>
-          <th>Taito</th>
-          <th> Paikka </th>
+          <th>Paikka </th>
           <th>Häiriö</th>
           <th>Toistoja</th>
           <th>Tavoite</th>
@@ -123,20 +89,22 @@ Tähän pitäisi tulla koko edistys
 
 
     </p>
+  </div>
 </div>
-          
-          
+
+
 <script>
-    function showDetails() {
-        var x = document.getElementById("yksityiskohdat");
-        if (x.style.display === "none") {
-          x.style.display = "block";
-        } else {
-          x.style.display = "none";
-        }
-    }
-          </script>
- 
+  function showDetails() {
+      var x = document.getElementById("details");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+  }
+        </script>
+          
 
 
 {% endblock %}
+

@@ -1,31 +1,56 @@
 body {
     margin: auto;
-    max-width: 45em;
+    background: darkgray;
+    max-width: 65em;
     font-family: 'Helvetica', 'Arial', sans-serif;
-    background: yellowgreen;
+    background: lightgray;
 }
 
 nav li {
     display: inline-block;
-    padding: .7em 1em .5em;
-    background: black;
+    padding: .7em 2em .5em;
+    background: lightsteelblue;
     border-radius: .5em;
     margin: .2em;
 }
 
 .header {
-    background: orange;
+    background: gainsboro;
     font-weight: bold;
-    padding: 2em 1em;
+    padding: 0.5em 0.5em;
     font-size: 2em;
     border-radius: .5em;
     margin-top: .5em;
 }
 
+.list {
+    display: block;
+    padding: .7em 1em .5em;
+    background: gray;
+    border-radius: .5em;
+    margin: .2em;
+}
+
+.details {
+    display: block;
+    padding: .7em 0.1em .5em;
+    background: gray;
+    border-radius: .5em;
+    margin: .2em;
+}
+
+.block {
+    display: block;
+    padding: .7em 2em .5em;
+    background: darkgray;
+    border-radius: .5em;
+    margin: .2em;
+}
+
 form {
     float: none;
     padding: .5em;
-    background: goldenrod;
+    background: gray;
     border-radius: .5em;
     max-width: 35em;
     display  : grid;
@@ -40,37 +65,104 @@ form label, input{
     margin: auto 0;
 }
 
+input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=password], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: lightsteelblue;
+    color: black;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+ input[type=submit]:hover {
+ background-color: blue; 
+  } 
+  
+
+   
+
+button {
+   background-color: lightsteelblue;
+   color: black;
+   padding: 14px 20px;
+   margin: 8px 0;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+button:hover {
+    background-color: blue;
+}
+
+/* input[type=onclick] {
+    width: 100%;
+    background-color: red;
+    color: black;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }  */
+
+
 form #button {
+    
     grid-column-start: 2;
     padding:5px;
     border: none;
     text-align: center;
     width: 5em;
     margin: auto 0 auto 5.5em;
-    background: tan;
+    background: red;
 }
 
-form #button:hover{
-    background: rgb(138, 119, 94);
-    color: white;
-}
+/* form #button:hover{
+    background: blue;
+    color: red;
+} */ */
 
 
-nav ul {
+/* nav ul {
     padding: 0;
     margin: .5em;
     text-align: center;
-}
+} */
 
 h2 {
     margin-top: 0;
 }
 
-.content {
+ /* .content {
    background: white;
    padding: 1.5em 2em;
    border-radius: .5em
-}
+} */
+
+
 
 nav li a {
     text-decoration: none;
@@ -78,5 +170,9 @@ nav li a {
 }
 
 nav li:hover {
-    background-color: rgb(226, 226, 226);
+    background-color: blue; 
+}  
+
+th {
+    text-align: left;
 }

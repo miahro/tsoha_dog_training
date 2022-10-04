@@ -4,17 +4,12 @@
 
 <h2>Käyttäjän {{session.user_name}}  koirat </h2>
 
-<!-- {% for dog in dogs %}
-<li><a href="/dogprog/{{ dog.id }}">{{ dog.dogname }}</a>
-{% endfor %}
-</ul> -->
-
- <!-- <a href="/">Palaa takaisin</a> --> 
-
-{% for dog in dogs %}
-<li><a href="/dogchoice/{{ dog.id }}">{{ dog.dogname }}</a>
-{% endfor %}
-</ul> 
- 
+<div class="list">
+        <ul>
+            {% for dog in dogs %}
+            <li><a href="/dogchoice/{{ dog.id }}">{{ dog.dogname }}</a>
+            {% endfor %}
+        </ul> 
+</div>
 
 {% endblock %}

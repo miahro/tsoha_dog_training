@@ -5,10 +5,11 @@
 <h2>Käyttäjä {{session.user_name}}   </h2>
 
 <p>
-Koiran valinta onnistui, valittu koira {{session.dog_name}}
-Automaattinen uudelleen ohjaus 5 sekunnissa
+Koiran valinta onnistui, valittu koira {{session.dog_name}}. <br>
+Automaattinen uudelleen ohjaus <span id="countdowntimer">10 </span> sekunnissa
 
-<meta http-equiv="Refresh" content="5; url=/markprogress" />
+
+<meta http-equiv="Refresh" content="10; url=/markprogress" />
 
 </p>
 
@@ -16,6 +17,16 @@ Automaattinen uudelleen ohjaus 5 sekunnissa
 <li><a href="/dogchoice/{{ dog.id }}">{{ dog.dogname }}</a>
 {% endfor %}
 </ul> 
- 
+
+
+<script type="text/javascript">
+    var timeleft = 10;
+    var downloadTimer = setInterval(function(){
+    timeleft--;
+    document.getElementById("countdowntimer").textContent = timeleft;
+    if(timeleft <= 0)
+        clearInterval(downloadTimer);
+    },1000);
+</script>
 
 {% endblock %}

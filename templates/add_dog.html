@@ -4,15 +4,13 @@
 
 <h2>Koiran lisäys</h2>
 
-<!-- ToDo -->
-<!-- Form looks terrible, must be fixed -->
 
 <form action="/add_dog" method="post">
-Koiran nimi: <br><input type="text" name="dogname" minlength="1" maxlength="20">
-    <input type="submit" value="Lisää koira">
+    <label for="dogname">Koiran nimi: </label>
+    <input type="text" name="dogname" minlength="1" maxlength="20"><br>
+    <input type="submit" name="add" value="Lisää koira">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
-<!-- <a href="/">Palaa takaisin</a> -->
 
 {% endblock %}
