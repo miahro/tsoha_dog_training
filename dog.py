@@ -180,7 +180,7 @@ def mark_progress(plan_id, repeats):
         return True
     try:
         sql = '''UPDATE Progress
-                SET repeated = repeated + :repeats
+                SET repeated = GREATEST(repeated + :repeats, 0)
                 WHERE id=:plan_id'''
         result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
         db.session.commit()

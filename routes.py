@@ -117,13 +117,13 @@ def markprogress():
         disturbance_id = request.form["disturbance"] 
         repeats = request.form["repeats"]
         print(f"repeats: {repeats}") #debug print(remove)
-        total_progress = dog.get_total_progress(dog_id)
         plan_id = dog.find_plan_id(dog_id, skill_id, place_id, disturbance_id)
+        dog.mark_progress(plan_id, repeats)
+        plan_progress = dog.plan_progress(dog_id)
+        total_progress = dog.get_total_progress(dog_id) #this line is in wrong places and causes wrong report output
         skills = dog.get_skills(session["dog_id"]) #needed for reporting form
         places = dog.get_places(session["dog_id"]) #needed for reporting form
         disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
-        dog.mark_progress(plan_id, repeats)
-        plan_progress = dog.plan_progress(dog_id)
         prog = dog.get_skill_progress(dog_id)
         return render_template("/markprogress.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
 

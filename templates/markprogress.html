@@ -138,8 +138,13 @@ as backup plan, this will do -->
       }
   }
         </script>
-          
 
+<!-- prevents resubmitting form data -->
+<script>
+  if ( window.history.replaceState ) {
+    window.history.replaceState( null, null, window.location.href );
+   }
+</script>
 
 {% endblock %}
 
