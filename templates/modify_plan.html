@@ -5,22 +5,38 @@
 
 <h2>Suunnitelman muokkaus</h2>
 
-<p>Uuden taito-, paikka- tai häiriövalinnan lisäys:</p>
+<p><b>Muuta koirakohtaisen suunnitelman tavoitemääriä</b></p>
 
-<form action="/modify_plan" onsubmit="return validate();" method="post">
+<label for="targets">Valitse koulutus (id | taito | paikka | häiriö | tavoitemäärä):</label>
+
+<div class="big_select">
+<form action="/modify_plan" method="post">
+    Koulutus ta<select name="targets" id="targets">
+    {% for x in plan_progress %}
+    <option value={{x.id}}> {{x.id}} | {{x.skill}} | {{x.disturbance}} | {{x.place}} | {{x.target_repeats}}</option>
+    {% endfor %}
+    </select><br>
+    <input type="submit" value="Valitse koulutus">
+    <input type="hidden" name="change_item" value="targets">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
+</form>
+
+<p><b>Uuden taito-, paikka- tai häiriövaihtoehdon lisäys:</b></p>
+
+<form action="/modify_plan" method="post">
     Taito <br><input type="text" name="newskill" minlength="1" maxlength="30"> <br>
     <input type="submit" value="Lisää taito">
     <input type="hidden" name="change_item" value="skill">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    </form>
-    
+</form>
+</div>
 
 
 <form action="/modify_plan" method="post">
-Paikka <br><input type="text" name="newplace" minlength="1" maxlength="30"> <br>
-<input type="submit" value="Lisää paikka">
-<input type="hidden" name="change_item" value="place">
-<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    Paikka <br><input type="text" name="newplace" minlength="1" maxlength="30"> <br>
+    <input type="submit" value="Lisää paikka">
+    <input type="hidden" name="change_item" value="place">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
 <form action="/modify_plan" method="post">
@@ -28,7 +44,7 @@ Paikka <br><input type="text" name="newplace" minlength="1" maxlength="30"> <br>
     <input type="submit" value="Lisää häiriö">
     <input type="hidden" name="change_item" value="disturbance">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    </form>
+</form>
 
 
 

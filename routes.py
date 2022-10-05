@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, session, abort
+from flask import render_template, request, redirect, session, abort, url_for
 import users
 import dog
 import plan
@@ -131,12 +131,20 @@ def markprogress():
 
 @app.route("/modify_plan", methods=["GET", "POST"])
 def modify_plan():
+    dog_id = dog.get_dog_id()
+    skills = dog.get_skills(session["dog_id"]) #needed for reporting form
+    places = dog.get_places(session["dog_id"]) #needed for reporting form
+    disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
+    prog = dog.get_skill_progress(dog_id)
+    plan_progress = dog.plan_progress(dog_id)        
+    total_progress = dog.get_total_progress(dog_id)    
     if request.method =="GET":
         print("routes.add_place with GET call") #debug print remove
-        return render_template("/modify_plan.html")
+        return render_template("/modify_plan.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
     if request.method =="POST":
         print("routes.add_place with POST call") #debug print remove
         print(request.form["change_item"]) #debug print remove
+        users.csrf_check()
         change_item = request.form["change_item"]
         if change_item == "skill":
             newskill=request.form["newskill"].lower()
@@ -158,11 +166,97 @@ def modify_plan():
                 return render_template("error.html",  message="Häiriössä tulee olla 1-30 merkkiä")
             else:
                 plan.add_disturbance(newdisturbance)
+        elif change_item == "targets":
+            plan_id=int(request.form["targets"])
+            plan_items = dog.get_plan_items(plan_id)
+            print(f"modify plan change item targets, plan id {plan_id}") #debut print remove, ok so far return correct plan_id
+#            change_targets(plan_id)
+#            return redirect(url_for("/change_targets.html"))
+            #session["msg"]=plan_id 
+            #return redirect("/dummy")
+ #           session["plan_id"]=plan_id
+#            return redirect("/change_targets")
+            return render_template("/change_targets.html", plan_items=plan_items)
+        elif change_item =="target_change":
+            print("we got to target change before crashing")
+            newtarget = int(request.form["newtarget"])
+            plan_id = int(request.form["plan_id"])
+            if newtarget == 0:
+                print(plan_id)
+                dog.remove_from_plan(plan_id)
+                plan_items = dog.get_plan_items(plan_id)
+                return render_template("/modify_plan.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+            else:
+                dog.change_plan_targets(plan_id, newtarget)
+            print(f"in modify plan, target_change detected with change_item {change_item}, newtarget {newtarget}")
 
 
 #            print(request.form["newdisturbance"])
 
-        return render_template("/modify_plan.html")
+        return render_template("/modify_plan.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+
+# @app.route("/dummy", methods=["GET", "POST"])
+# def dummy():
+#     if request.method=="GET":
+#         msg=session["msg"]
+#         return render_template("dummy.html", msg=msg)
+#     if request.method=="POST":
+#         msg=session["msg"]
+#         return render_template("dummy.html", msg=msg)
+
+
+@app.route("/change_targets", methods=["GET", "POST"])
+def change_targets(plan_items=None):
+
+#    passed_value = request.args.get("passed_value")
+   
+    if not users.is_logged_in(): #should not be possible to get here
+        return render_template("error.html", message="et ole kirjautunut sisään")   
+    dog_id = dog.get_dog_id()
+    if dog_id is None: #should not be possible to get here
+        return render_template("error.html", message="koiraa ei valittu")   
+    plan_id = session["plan_id"]
+    print(f"in change targets plan_id {plan_id}") #debug print remove
+    items = dog.get_plan_items(plan_id)
+    print(f"items {items}") 
+    print("items one by one") 
+    for item in items:
+        print(item)
+    if request.method == "GET":
+        skills = dog.get_skills(session["dog_id"]) #needed for reporting form
+        places = dog.get_places(session["dog_id"]) #needed for reporting form
+        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
+    #    prog = dog.get_skill_progress(dog_id)
+        plan_progress = dog.plan_progress(dog_id)   #not needed?     
+    #    total_progress = dog.get_total_progress(dog_id)
+        return render_template("/change_targets.html", plan_items=items)
+#orig        return render_template("/change_targets.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+    if request.method == "POST":
+        users.csrf_check()
+        skill_id = request.form["skill"]   #not needed?
+        place_id = request.form["place"] #not needed?
+        disturbance_id = request.form["disturbance"] #not needed?
+        repeats = int(request.form["repeats"]) #not needed?
+        print(type(repeats))
+        print(f"repeats: {repeats}") #debug print(remove)
+        #plan_id = dog.find_plan_id(dog_id, skill_id, place_id, disturbance_id)
+        
+        print(f"in change_targets items POST {items}")
+
+        
+        if repeats == 0:
+            dog.remove_from_plan(plan_id)
+    #    dog.mark_progress(plan_id, repeats)
+        plan_progress = dog.plan_progress(dog_id)
+    #    total_progress = dog.get_total_progress(dog_id) #this line is in wrong places and causes wrong report output
+        skills = dog.get_skills(session["dog_id"]) #needed for reporting form
+        places = dog.get_places(session["dog_id"]) #needed for reporting form
+        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
+     #   prog = dog.get_skill_progress(dog_id)
+        return render_template("/change_targets.html", plan_items=items)
+#orig        return render_template("/change_targets.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+
+
 
 def check_length(text, min, max):
     if len(text)>= min and len(text) <= max:

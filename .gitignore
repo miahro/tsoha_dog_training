@@ -5,3 +5,5 @@ init_env.sh
 __pycache__
 .heroku_secret_key
 ToDo.md
+sqltest.sql
+templates/dummy.html

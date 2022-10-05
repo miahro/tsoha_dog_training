@@ -42,7 +42,7 @@ def plan_progress(dog_id):
     
     try:
         sql='''
-            SELECT Dogs.dogname, SKills.skill, Places.place, 
+            SELECT Plan.id, Dogs.dogname, SKills.skill, Places.place, 
                     Disturbances.disturbance, Plan.target_repeats, Progress.repeated,
                     LEAST((Progress.repeated*1.0)/(Plan.target_repeats*1.0), 1.0) AS achieved
                 FROM Dogs, Skills, Places, Disturbances, Plan, Progress
@@ -52,6 +52,7 @@ def plan_progress(dog_id):
                     AND Places.id = Plan.place_id
                     AND Disturbances.id = Plan.disturbance_id
                     AND Progress.plan_id = Plan.id
+                    AND Plan.visible=TRUE
                 ORDER BY Skills.id, Places.id, Disturbances.id
             ;'''
         result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
@@ -163,7 +164,7 @@ def get_disturbances(dog_id):
                 DISTINCT Disturbances.id, Disturbances.disturbance
             FROM Disturbances, Plan
             WHERE Plan.dog_id=:dog_id 
-                AND Plan.disturbance_id = Disturbances.id
+                AND Plan.disturbance_id = Disturbances.id 
                 AND Plan.visible = TRUE
             ORDER BY Disturbances.id
             ;'''
@@ -226,4 +227,39 @@ def find_plan_id(dog_id, skill_id, place_id, disturbance_id):
         print("something wrong in module dog function find_plan_id")
         return False
 
+#error handling?
+def get_plan_items(plan_id):
+    sql =   '''SELECT Plan.id, SKills.skill, Places.place, Disturbances.disturbance, Plan.target_repeats
+                FROM Dogs, Skills, Places, Disturbances, Plan
+                WHERE   Plan.id =:plan_id
+                        AND Dogs.id = Plan.dog_id                     
+                        AND  Places.id = Plan.place_id
+                        AND Skills.id = Plan.skill_id
+                        AND Places.id = Plan.place_id
+                        AND Disturbances.id = Plan.disturbance_id
+                        AND Plan.visible=TRUE;'''
+    result = db.session.execute(sql, {"plan_id":plan_id}).fetchone()
+    return result
 
+#    sql = ''' SELECT SKills.skill, Places.place, Disturbances.Disturbance, 
+
+#error handling?
+def remove_from_plan(plan_id):
+    sql = '''UPDATE Plan
+            SET visible=FALSE
+            WHERE Plan.id=:plan_id;
+            '''
+    result = db.session.execute(sql, {"plan_id":plan_id})
+    db.session.commit()
+    return True
+
+
+#error handling?
+def change_plan_targets(plan_id, newtarget):
+    sql = '''UPDATE Plan
+            SET target_repeats=:newtarget
+            WHERE Plan.id=:plan_id
+          '''
+    result = db.session.execute(sql, {"plan_id":plan_id, "newtarget":newtarget})
+    db.session.commit()
+    return True

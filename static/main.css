@@ -6,6 +6,10 @@ body {
     background: lightgray;
 }
 
+.big_select {
+    width: 100%;
+}
+
 nav li {
     display: inline-block;
     padding: .7em 2em .5em;
@@ -52,9 +56,9 @@ form {
     padding: .5em;
     background: gray;
     border-radius: .5em;
-    max-width: 35em;
+    max-width: 75em;
     display  : grid;
-    grid-template-columns: 15em 20em;
+    grid-template-columns: 10em 50em;
     grid-row-gap: .3em;
     margin-bottom: 2em;
     margin-left: 2em;

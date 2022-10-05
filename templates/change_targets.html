@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}}:</h2>
+
+<p>Valittu koulutus {{plan_items.id}}</p>
+
+
+
+    <table style="width:100%">
+        <tr>
+          <th>Taito</th>
+          <th>Paikka </th>
+          <th>Häiriö</th>
+          <!-- <th>Toistoja</th> -->
+          <th>Tavoite</th>
+        </tr>
+        <tr>
+        <td>{{plan_items.skill}}</td>
+          <td>{{plan_items.place}} </td>
+          <td>{{plan_items.disturbance}} </td>
+          <td>{{plan_items.target_repeats}} </td>
+        </tr>      
+    </table> 
+    <br>
+<p>Anna uusi tavoite</p>
+<p>Anna nolla poistaaksesi kokonaan suunnitelmasta</p>
+
+<form action="/modify_plan" method="post">
+    Uusi tavoite <input type="number" name="newtarget" min="0"> <br>
+    <input type="submit", value="Uusi tavoite">
+    <input type="hidden" name="change_item" value="target_change">
+    <input type="hidden" name="plan_id" value="{{plan_items.id}}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form><br>
+
+<form action="/modify_plan" method="get">
+    Ei muutosta <input type="submit", value="Palaa">
+</form>
+  
+
+
+
+    {% endblock %}
