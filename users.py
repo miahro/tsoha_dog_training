@@ -63,7 +63,7 @@ def register(username, password):
         db.session.execute(sql, {"username":username, "password":hash_value})
         db.session.commit()
     except:
-        print("Database error in module users function register")
+#        print("Database error in module users function register")
         return False
         #return login(username, password)
     return True

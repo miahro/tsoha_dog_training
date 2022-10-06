@@ -290,5 +290,4 @@ def hidden_items(dog_id):
                         AND Disturbances.id = Plan.disturbance_id
                         AND Plan.visible=FALSE;'''
     result = db.session.execute(sql, {"dog_id": dog_id}).fetchall()
-    db.session.commit()
-    return result
+#error handling?
