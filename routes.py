@@ -10,6 +10,7 @@ import secrets
 def index(msg=''):  #msg is message for main page, default empty
     return render_template("index.html")
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET": #GET for opening login menu
@@ -137,10 +138,11 @@ def modify_plan():
     disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
     prog = dog.get_skill_progress(dog_id)
     plan_progress = dog.plan_progress(dog_id)        
-    total_progress = dog.get_total_progress(dog_id)    
+    total_progress = dog.get_total_progress(dog_id)  
+    hidden_items = dog.hidden_items(dog_id)  
     if request.method =="GET":
         print("routes.add_place with GET call") #debug print remove
-        return render_template("/modify_plan.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+        return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
     if request.method =="POST":
         print("routes.add_place with POST call") #debug print remove
         print(request.form["change_item"]) #debug print remove
@@ -185,15 +187,30 @@ def modify_plan():
                 print(plan_id)
                 dog.remove_from_plan(plan_id)
                 plan_items = dog.get_plan_items(plan_id)
-                return render_template("/modify_plan.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+                return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
             else:
                 dog.change_plan_targets(plan_id, newtarget)
             print(f"in modify plan, target_change detected with change_item {change_item}, newtarget {newtarget}")
-
+        elif change_item == "add_training":
+            print("we got to add new training in function modify_plan") #debug print remove
+        #    hidden_items = dog.hidden_items(dog_id)
+        #    print(hidden_items) #debut print remove
+        #    for item in hidden_items: #debug print remove
+        #        print(item) #debut print remove
+            add_training_id = int(request.form["add_training"])
+            print(f"in add training part of modify pland add_training id {add_training_id}")
+            dog.add_new_item(add_training_id)
+            #tähän lisää koulutus
+            return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+        elif change_item == "update_selection":
+            plan.update_selection(dog_id)
+            return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+        else:
+            render_template("error.html", msg="tätä ei pitäisi ikinä tapahtua")
 
 #            print(request.form["newdisturbance"])
 
-        return render_template("/modify_plan.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+        return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
 
 # @app.route("/dummy", methods=["GET", "POST"])
 # def dummy():

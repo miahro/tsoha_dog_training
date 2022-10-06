@@ -11,15 +11,50 @@
 
 <div class="big_select">
 <form action="/modify_plan" method="post">
-    Koulutus ta<select name="targets" id="targets">
+    Koulutus<select name="targets" id="targets">
     {% for x in plan_progress %}
-    <option value={{x.id}}> {{x.id}} | {{x.skill}} | {{x.disturbance}} | {{x.place}} | {{x.target_repeats}}</option>
+    <option value={{x.id}}> {{x.id}} | {{x.skill}} | {{x.place}}  | {{x.disturbance}} | {{x.target_repeats}}</option>
     {% endfor %}
     </select><br>
     <input type="submit" value="Valitse koulutus">
     <input type="hidden" name="change_item" value="targets">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
 </form>
+
+
+
+<p><b>Lisää uusi koulutus</b></p>
+
+<label for="targets">Valitse koulutus (id | taito | paikka | häiriö | tavoitemäärä):</label>
+
+<div class="big_select">
+<form action="/modify_plan" method="post">
+    Koulutus<select name="add_training" id="add_training">
+    {% for x in hidden_items %}
+    <option value={{x.id}}> {{x.id}} | {{x.skill}} | {{x.place}} | {{x.disturbance}} | {{x.target_repeats}}</option>
+    {% endfor %}
+    </select><br>
+    <input type="submit" value="Valitse koulutus">
+    <input type="hidden" name="change_item" value="add_training">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
+</form>
+
+
+<label for="targets">Päivitä koulutusvaihtoehdot:</label>
+<div class="big_select">
+<form action="/modify_plan" method="post">
+    <!-- Koulutus<select name="add_training" id="add_training">
+    {% for x in hidden_items %}
+    <option value={{x.id}}> {{x.id}} | {{x.skill}} | {{x.disturbance}} | {{x.place}} | {{x.target_repeats}}</option>
+    {% endfor %}
+    </select><br> -->
+    Päivitä <input type="submit" value="Päivitä koulutusvaihtoehdot">
+    <input type="hidden" name="change_item" value="update_selection">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
+</form>
+
+
+
 
 <p><b>Uuden taito-, paikka- tai häiriövaihtoehdon lisäys:</b></p>
 

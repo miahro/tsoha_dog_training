@@ -60,7 +60,7 @@ def gen_default_plan(dog_id): #error handling must be added
 
     db.session.execute(sql, {"dog_id": dog_id, "rep":defaults.default_target_repeats})
     db.session.commit()
-    gen_default_progress(dog_id)
+    #gen_default_progress(dog_id)
 
 
 def gen_default_progress(dog_id): #error handling must be added
@@ -87,4 +87,15 @@ def add_place(newplace):
 def add_disturbance(newdisturbance):
     sql = '''INSERT INTO Disturbances(disturbance) VALUES(:newdisturbance) ON CONFLICT DO NOTHING;'''
     db.session.execute(sql, {"newdisturbance": newdisturbance})
+    db.session.commit()
+
+#this feature has not been tested in app!!!
+#error handling?
+def update_selection(dog_id):
+    sql = '''INSERT INTO Plan (dog_id, skill_id, place_id, disturbance_id, target_repeats, visible)
+            SELECT :dog_id, Skills.id, Places.id, Disturbances.id, 10, FALSE
+            FROM Skills, Places, Disturbances
+            WHERE NOT EXISTS 
+                (SELECT Plan.skill_id, Plan.place_id, Plan.disturbance_id FROM Plan WHERE plan.skill_id=skills.id AND Plan.place_id=Places.id AND Plan.disturbance_id=Disturbances.id);'''
+    db.session.execute(sql, {"dog_id": dog_id})
     db.session.commit()

@@ -31,6 +31,7 @@ def add_dog_name(dogname, owner_id):
         return False
  #   print(f"in add_dog function return value of : {dog_id}")
     plan.gen_default_plan(dog_id)
+    plan.gen_default_progress(dog_id)
     return True
 
 def plan_progress(dog_id):
@@ -263,3 +264,31 @@ def change_plan_targets(plan_id, newtarget):
     result = db.session.execute(sql, {"plan_id":plan_id, "newtarget":newtarget})
     db.session.commit()
     return True
+
+#not tested in app!!!
+#error handling?
+def add_new_item(plan_id):
+    sql = '''UPDATE Plan
+            SET visible=TRUE
+            WHERE Plan.id=:plan_id
+          '''
+    result = db.session.execute(sql, {"plan_id":plan_id})
+    db.session.commit()
+    return True
+
+#not tested in app!!!
+#error handling?
+def hidden_items(dog_id):
+    sql = '''SELECT Plan.id, SKills.skill, Places.place, Disturbances.disturbance, Plan.target_repeats
+                FROM Dogs, Skills, Places, Disturbances, Plan
+                WHERE   
+                        Plan.dog_id = 1
+                        AND Dogs.id = Plan.dog_id                     
+                        AND  Places.id = Plan.place_id
+                        AND Skills.id = Plan.skill_id
+                        AND Places.id = Plan.place_id
+                        AND Disturbances.id = Plan.disturbance_id
+                        AND Plan.visible=FALSE;'''
+    result = db.session.execute(sql, {"dog_id": dog_id}).fetchall()
+    db.session.commit()
+    return result
