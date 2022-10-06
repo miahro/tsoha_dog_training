@@ -3,14 +3,12 @@ from db import db
 from flask import abort, request, session
 import plan
 
+#SQL error handling?
 def list_dogs(owner_id):
     sql = "SELECT id, dogname FROM Dogs WHERE owner_id=:owner_id "
     result = db.session.execute(sql, {"owner_id": owner_id})
     dogs = result.fetchall()
-#    print(raw_list)
-    #dogs = [x[0] for x in raw_list]
-    #dogs = raw_list
-    if not dogs:
+    if not dogs: #this is not correct fix later (not fatal)
         return ["ei koiria"]
     else:
         return dogs 
@@ -18,25 +16,20 @@ def list_dogs(owner_id):
 
 def add_dog_name(dogname, owner_id):
     dogname = dogname.capitalize()
-#    print(f"in module dogs function add_dog_name name:{dogname}, owner id: {owner_id}")
     try:
         sql = '''INSERT INTO Dogs (dogname, owner_id) 
             VALUES (:dogname, :owner_id) RETURNING id'''
         result = db.session.execute(sql, {"dogname":dogname, "owner_id":owner_id})
         [dog_id] = result.fetchone()
         db.session.commit()
-
     except:
         print("something goes wrong in add_dog function")
         return False
- #   print(f"in add_dog function return value of : {dog_id}")
     plan.gen_default_plan(dog_id)
-    plan.gen_default_progress(dog_id)
+    plan.gen_default_progress(dog_id) #logics where and when progress is generated needs to be rechecked later
     return True
 
 def plan_progress(dog_id):
- #   print(f"dog.plan_progress dog_id {dog_id}")
- #   print(f"dog.plan_progress owner_id {get_owner(dog_id)}")
     if session["user_id"] != get_owner(dog_id):
         print("owner check not matching")
         abort(403)
@@ -57,10 +50,9 @@ def plan_progress(dog_id):
                 ORDER BY Skills.id, Places.id, Disturbances.id
             ;'''
         result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
-
         return result
     except:
-        print("something goes wrong in module dog plan_progress function")
+        #print("something goes wrong in module dog plan_progress function")
         return False
 
 
@@ -82,7 +74,7 @@ def get_total_progress(dog_id):
         result = db.session.execute(sql, {"dog_id":dog_id}).fetchone()
         return result[0]
     except:
-        print("Error in module dog, function get_skill_progress")
+        #print("Error in module dog, function get_skill_progress")
         return False
 
 
@@ -107,30 +99,32 @@ def get_skill_progress(dog_id):
         result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
         return result
     except:
-        print("Error in module dog, function get_skill_progress")
+        #print("Error in module dog, function get_skill_progress")
         return False
 
 #not implemented, or needed at the moment
 #just reservation for possible future needs
+#can probably be removed
 def get_details_by_skill(dog_id, skill_id):
     pass
 
 
+#SQL error handling?
 def get_owner(dog_id):
     sql = "SELECT owner_id FROM Dogs WHERE id=:dog_id"
     result = db.session.execute(sql, {"dog_id":dog_id}).fetchone()
-  #  print(result)
     return result[0]
 
 def get_dog_id():
     return session.get("dog_id")
 
+#SQL error handling?
 def get_name(dog_id):
     sql = "SELECT dogname FROM Dogs WHERE id=:dog_id"
     result = db.session.execute(sql, {"dog_id":dog_id}).fetchone()
- #   print(f"in dog.get_name {result}")
     return result[0]
 
+#SQL error hadling
 def get_skills(dog_id):
     sql = '''
             SELECT 
@@ -142,9 +136,9 @@ def get_skills(dog_id):
             ORDER BY Skills.id
             '''
     result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
- #   print(result)
     return result    
 
+#SQL error handling?
 def get_places(dog_id):
     sql = '''
             SELECT 
@@ -156,9 +150,9 @@ def get_places(dog_id):
             ORDER BY Places.id
             ;'''
     result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
- #   print(result)
     return result    
 
+#SQL error handling?
 def get_disturbances(dog_id):
     sql = '''
             SELECT 
@@ -170,13 +164,11 @@ def get_disturbances(dog_id):
             ORDER BY Disturbances.id
             ;'''
     result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
-  #  print(result)
     return result    
 
 
 
 def mark_progress(plan_id, repeats):
-    print(f"in module dog repeats {repeats}") #debug print remove
     if repeats == 0:
         return True
     try:
@@ -185,27 +177,11 @@ def mark_progress(plan_id, repeats):
                 WHERE id=:plan_id'''
         result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
         db.session.commit()
-        print("module dog mark_progress succesful") #debug print remove
+#        print("module dog mark_progress succesful") #debug print remove
     except:
-        print("something goes wrong in module dog function mark_progress")
+#        print("something goes wrong in module dog function mark_progress")
         return False
     return True
-
-
-#backup can be removed after sufficient testing
-#ORIGINAL VERSION OF MARKPROGRES BASED ON REPORTING COMPLETED TRAININGS ONE BY ONE
-# def mark_progress(plan_id):
-#     try:
-#         sql = '''UPDATE Progress
-#                 SET repeated = repeated +1
-#                 WHERE id=:plan_id'''
-#         result = db.session.execute(sql, {"plan_id":plan_id})
-#         db.session.commit()
-#         print("module dog mark_progress succesful")
-#     except:
-#         print("something goes wrong in module dog function mark_progress")
-#         return False
-#     return True
 
 
 def find_plan_id(dog_id, skill_id, place_id, disturbance_id):
@@ -220,15 +196,15 @@ def find_plan_id(dog_id, skill_id, place_id, disturbance_id):
                 ;'''
         result = db.session.execute(sql, {"dog_id":dog_id, "skill_id":skill_id, \
                     "place_id":place_id, "disturbance_id":disturbance_id}).fetchone()
-        print(f"find_plan_id {result}")
-        print(type(result))
-        print(result[0])
+#        print(f"find_plan_id {result}")
+#        print(type(result))
+#        print(result[0])
         return result[0]
     except:
-        print("something wrong in module dog function find_plan_id")
+#        print("something wrong in module dog function find_plan_id")
         return False
 
-#error handling?
+#SQL error handling?
 def get_plan_items(plan_id):
     sql =   '''SELECT Plan.id, SKills.skill, Places.place, Disturbances.disturbance, Plan.target_repeats
                 FROM Dogs, Skills, Places, Disturbances, Plan
@@ -242,9 +218,7 @@ def get_plan_items(plan_id):
     result = db.session.execute(sql, {"plan_id":plan_id}).fetchone()
     return result
 
-#    sql = ''' SELECT SKills.skill, Places.place, Disturbances.Disturbance, 
-
-#error handling?
+#SQL error handling?
 def remove_from_plan(plan_id):
     sql = '''UPDATE Plan
             SET visible=FALSE
@@ -254,8 +228,7 @@ def remove_from_plan(plan_id):
     db.session.commit()
     return True
 
-
-#error handling?
+#SQL error handling?
 def change_plan_targets(plan_id, newtarget):
     sql = '''UPDATE Plan
             SET target_repeats=:newtarget

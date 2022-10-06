@@ -22,11 +22,8 @@ def login():
         if users.login(username, password):
             return render_template("index.html", msg="Sisäänkirjautuminen onnistui")
         else:
-#            return render_template("error.html", message="Väärä tunnus tai salasana")
             session["error_message"]="Väärä tunnus tai salasana"
             return redirect("error")
-
-
 
 @app.route("/logout")
 def logout():
@@ -35,7 +32,6 @@ def logout():
     else: #trying to logout when not logged in return error (not fatal)
         session["error_message"]="Uloskirjautuminen ei onnistunut"
         return redirect("/error")
-#        return render_template("error.html", message="uloskirjautuminen ei onnistunut")
 
 @app.route("/error", methods=["GET"])
 def error(message=''):
@@ -54,40 +50,34 @@ def register():
         if not check_length(username, 1, 20):
             session["error_message"]="Tunnuksessa tulee olla 1-20 merkkiä"
             return redirect("/error")
-#            return render_template("/error.html", message="Tunnuksessa tulee olla 1-20 merkkiä")
         password1 = request.form["password1"]
         password2 = request.form["password2"]
         if password1 != password2:
             session["error_message"]="Salasanat eroavat"
             return redirect("/error")
-#            return render_template("error.html", message="Salasanat eroavat")
         if password1 =="":
             session["error_message"]="Salasana on tyhjä"
             return redirect("/error")
-#            return render_template("error.html", message="Salasana on tyhjä")
         if users.register(username, password1):
             return render_template("index.html", msg="Käyttäjätunnuksen " + username + " luonti onnistui")
         else:
             session["error_message"]="Käyttäjätunnus on jo olemassa"
             return redirect("/error")
-#           return render_template("error.html", message="Rekisteröinti ei onnistunut")
 
 @app.route("/dogs", methods = ["GET"])
 def dogs():
-    if not users.is_logged_in(): #should not be possible to call this if not logged in, but just in case
+    if not users.is_logged_in(): 
         session["error_message"]="Et ole kirjautunut sisään"
         return redirect("/error")
-#        return render_template("error.html", message="et ole kirjautunut sisään")
     else: 
         user_id = users.user_id()
-        dognames = dog.list_dogs(user_id) #this causes error if not logged in     
+        dognames = dog.list_dogs(user_id) 
         return render_template("dogs.html", dogs=dognames)
 
 
 @app.route("/add_dog", methods =["GET", "POST"]) 
 def add_dog():
-    if not users.is_logged_in(): #should not be possible to call this if not logged in, but just in case
-        #return render_template("error.html", message="et ole kirjautunut sisään")
+    if not users.is_logged_in(): 
         session["error_message"]="Et ole kirjautunut sisään"
         return redirect("/error")
     if request.method == "GET":
@@ -98,14 +88,12 @@ def add_dog():
         if len(name) < 1 or len(name)>20:
             session["error_message"]="Koiran nimessä tulee olla 1-20 merkkiä"
             return redirect("/error")
-#            return render_template("/error.html", message = "koiran nimessä tulee olla 1-20 merkkiä")
         if dog.add_dog_name(name, users.user_id()):
             dognames = dog.list_dogs(session["user_id"])
             return render_template("dogs.html", dogs=dognames)
         else:
             session["error_message"]="Koiran lisäys ei onnistunut"
             return redirect("/error")
-#            return render_template("error.html", message="Koiran lisäys ei onnistunut")
 
 
 @app.route("/dogchoice/<int:dog_id>", methods =["GET"]) 
@@ -113,39 +101,35 @@ def dogchoice(dog_id):
     if not users.is_logged_in(): 
         session["error_message"]="Et ole kirjautunut sisään"
         return redirect("/error")       
-        #return render_template("error.html", message="et ole kirjautunut sisään")
     if request.method =="GET":
         if users.user_id() != dog.get_owner(dog_id):
             abort(403) #this should only happen when user is manually setting address for other dog than own
             #hence abort should be justified action rather than raising non-fatal error alternative below
-            #return render_template("error.html", message="Et ole koiran omistaja")
+            #session["error_message"]="Et ole koiran omistaja"
+            #return redirect("error.html")
         session["dog_id"]=dog_id
         session["dog_name"]=dog.get_name(dog_id)
         return render_template("dogchoice.html")  
     else: #should not be possible, but here just for safety
         session["error_message"]="Tunnistamaton virhe"
         return redirect("/error")            
-        #return render_template("error.html", message="tällaista virhettä ei pitäisi tapahtua, toiminto koiran valinta")
 
 @app.route("/markprogress", methods =["GET", "POST"]) 
 def markprogress(): 
     if not users.is_logged_in(): 
         session["error_message"]="Et ole kirjautunut sisään"
         return redirect("/error")       
-        #return render_template("error.html", message="et ole kirjautunut sisään")   
     dog_id = dog.get_dog_id()
     if dog_id is None:
         session["error_message"]="Koiraa ei valittu"
         return redirect("/error")    
-#        return render_template("error.html", message="koiraa ei valittu")   
     if request.method == "GET":
-        skills = dog.get_skills(session["dog_id"]) #needed for reporting form
-        places = dog.get_places(session["dog_id"]) #needed for reporting form
-        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
+        skills = dog.get_skills(session["dog_id"]) #needed for reporting form, is it? test
+        places = dog.get_places(session["dog_id"]) #needed for reporting form, is it? test
+        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form, is it? test
         prog = dog.get_skill_progress(dog_id)
         plan_progress = dog.plan_progress(dog_id)        
         total_progress = dog.get_total_progress(dog_id)
-        #return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
         return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress)
     if request.method == "POST":
         users.csrf_check()
@@ -160,9 +144,9 @@ def markprogress():
         dog.mark_progress(plan_id, repeats)
         plan_progress = dog.plan_progress(dog_id)
         total_progress = dog.get_total_progress(dog_id) #this line is in wrong places and causes wrong report output
-        skills = dog.get_skills(session["dog_id"]) #needed for reporting form
-        places = dog.get_places(session["dog_id"]) #needed for reporting form
-        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
+        skills = dog.get_skills(session["dog_id"]) #needed for reporting form, or is it? test
+        places = dog.get_places(session["dog_id"]) #needed for reporting form, or is it? check
+        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form, or is it? check
         prog = dog.get_skill_progress(dog_id)
         return render_template("/markprogress.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress)
 
@@ -170,27 +154,25 @@ def markprogress():
 def modify_plan():
     if not users.is_logged_in(): 
         session["error_message"]="Et ole kirjautunut sisään"
-        return redirect("/error")       
-        #return render_template("error.html", message="et ole kirjautunut sisään")   
+        return redirect("/error")        
     dog_id = dog.get_dog_id()
     if dog_id is None:
         session["error_message"]="Koiraa ei valittu"
         return redirect("/error")    
-#        return render_template("error.html", message="koiraa ei valittu")   
     dog_id = dog.get_dog_id()
-    skills = dog.get_skills(session["dog_id"]) #needed for reporting form
-    places = dog.get_places(session["dog_id"]) #needed for reporting form
-    disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
+    skills = dog.get_skills(session["dog_id"]) #needed for reporting form? check
+    places = dog.get_places(session["dog_id"]) #needed for reporting form? check
+    disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form? check
     prog = dog.get_skill_progress(dog_id)
     plan_progress = dog.plan_progress(dog_id)        
     total_progress = dog.get_total_progress(dog_id)  
     hidden_items = dog.hidden_items(dog_id)  
     if request.method =="GET":
-        print("routes.add_place with GET call") #debug print remove
+#        print("routes.add_place with GET call") #debug print remove
         return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
     if request.method =="POST":
-        print("routes.add_place with POST call") #debug print remove
-        print(request.form["change_item"]) #debug print remove
+ #       print("routes.add_place with POST call") #debug print remove
+ #       print(request.form["change_item"]) #debug print remove
         users.csrf_check()
         change_item = request.form["change_item"]
         if change_item == "skill":
@@ -198,17 +180,13 @@ def modify_plan():
             if not check_length(newskill, 1, 30):
                 session["error_message"]="Taidossa tulee olla 1-30 merkkiä"
                 return redirect("/error")
-#                return render_template("error.html",  message="Taidossa tulee olla 1-30 merkkiä")
             else:
                 plan.add_skill(newskill)
-  #          print(request.form["newskill"])
         elif change_item == "place":
             newplace=request.form["newplace"].lower()
             if not check_length(newplace, 1, 30):
                 session["error_message"]="Paikassa tulee olla 1-30 merkkiä"
                 return redirect("/error")
- 
-#                return render_template("error.html",  message="Paikassa tulee olla 1-30 merkkiä")
             else:
                 plan.add_place(newplace)
  #           print(request.form["newplace"])
@@ -217,20 +195,12 @@ def modify_plan():
             if not check_length(newdisturbance, 1, 30):
                 session["error_message"]="Häiriössä tulee olla 1-30 merkkiä"
                 return redirect("/error")
-
-#                return render_template("error.html",  message="Häiriössä tulee olla 1-30 merkkiä")
             else:
                 plan.add_disturbance(newdisturbance)
         elif change_item == "targets":
             plan_id=int(request.form["targets"])
             plan_items = dog.get_plan_items(plan_id)
-            print(f"modify plan change item targets, plan id {plan_id}") #debut print remove, ok so far return correct plan_id
-#            change_targets(plan_id)
-#            return redirect(url_for("/change_targets.html"))
-            #session["msg"]=plan_id 
-            #return redirect("/dummy")
- #           session["plan_id"]=plan_id
-#            return redirect("/change_targets")
+            print(f"modify plan change item targets, plan id {plan_id}") #debug print remove
             return render_template("/change_targets.html", plan_items=plan_items)
         elif change_item =="target_change":
             print("we got to target change before crashing")
@@ -246,14 +216,9 @@ def modify_plan():
             print(f"in modify plan, target_change detected with change_item {change_item}, newtarget {newtarget}")
         elif change_item == "add_training":
             print("we got to add new training in function modify_plan") #debug print remove
-        #    hidden_items = dog.hidden_items(dog_id)
-        #    print(hidden_items) #debut print remove
-        #    for item in hidden_items: #debug print remove
-        #        print(item) #debut print remove
             add_training_id = int(request.form["add_training"])
             print(f"in add training part of modify pland add_training id {add_training_id}")
             dog.add_new_item(add_training_id)
-            #tähän lisää koulutus
             return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
         elif change_item == "update_selection":
             plan.update_selection(dog_id)
@@ -262,10 +227,6 @@ def modify_plan():
             session["error_message"]="Tunnistamaton virhe"
             return redirect("/error")
 
-#            render_template("error.html", msg="tätä ei pitäisi ikinä tapahtua")
-
-#            print(request.form["newdisturbance"])
-
         return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
 
 
@@ -273,60 +234,45 @@ def modify_plan():
 
 @app.route("/change_targets", methods=["GET", "POST"])
 def change_targets(plan_items=None):
-
-#    passed_value = request.args.get("passed_value")
-   
-    if not users.is_logged_in(): #should not be possible to get here
+    if not users.is_logged_in(): 
         session["error_message"]="Et ole kirjautunut sisään"
         return redirect("/error")    
-#        return render_template("error.html", message="et ole kirjautunut sisään")   
     dog_id = dog.get_dog_id()
-    if dog_id is None: #should not be possible to get here
+    if dog_id is None: 
         session["error_message"]="Koiraa ei valittu"
         return redirect("/error")    
-        #return render_template("error.html", message="koiraa ei valittu")   
     plan_id = session["plan_id"]
-    print(f"in change targets plan_id {plan_id}") #debug print remove
+#    print(f"in change targets plan_id {plan_id}") #debug print remove
     items = dog.get_plan_items(plan_id)
-    print(f"items {items}") 
-    print("items one by one") 
+#    print(f"items {items}") 
+#    print("items one by one") 
     for item in items:
         print(item)
     if request.method == "GET":
-        skills = dog.get_skills(session["dog_id"]) #needed for reporting form
-        places = dog.get_places(session["dog_id"]) #needed for reporting form
-        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
-    #    prog = dog.get_skill_progress(dog_id)
+        skills = dog.get_skills(session["dog_id"]) #needed for reporting form? recheck
+        places = dog.get_places(session["dog_id"]) #needed for reporting form? recheck
+        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form? recheck
         plan_progress = dog.plan_progress(dog_id)   #not needed?     
     #    total_progress = dog.get_total_progress(dog_id)
         return render_template("/change_targets.html", plan_items=items)
-#orig        return render_template("/change_targets.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
     if request.method == "POST":
         users.csrf_check()
         skill_id = request.form["skill"]   #not needed?
         place_id = request.form["place"] #not needed?
         disturbance_id = request.form["disturbance"] #not needed?
         repeats = int(request.form["repeats"]) #not needed?
-        print(type(repeats))
-        print(f"repeats: {repeats}") #debug print(remove)
-        #plan_id = dog.find_plan_id(dog_id, skill_id, place_id, disturbance_id)
-        
-        print(f"in change_targets items POST {items}")
-
+#        print(type(repeats))
+#        print(f"repeats: {repeats}") #debug print(remove)
+#        print(f"in change_targets items POST {items}")
         
         if repeats == 0:
             dog.remove_from_plan(plan_id)
     #    dog.mark_progress(plan_id, repeats)
         plan_progress = dog.plan_progress(dog_id)
-    #    total_progress = dog.get_total_progress(dog_id) #this line is in wrong places and causes wrong report output
-        skills = dog.get_skills(session["dog_id"]) #needed for reporting form
-        places = dog.get_places(session["dog_id"]) #needed for reporting form
-        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
-     #   prog = dog.get_skill_progress(dog_id)
+        skills = dog.get_skills(session["dog_id"]) #needed for reporting form? check
+        places = dog.get_places(session["dog_id"]) #needed for reporting form? check
+        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form? check
         return render_template("/change_targets.html", plan_items=items)
-#orig        return render_template("/change_targets.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
-
-
 
 def check_length(text, min, max):
     if len(text)>= min and len(text) <= max:
