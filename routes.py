@@ -112,15 +112,18 @@ def markprogress():
         prog = dog.get_skill_progress(dog_id)
         plan_progress = dog.plan_progress(dog_id)        
         total_progress = dog.get_total_progress(dog_id)
-        return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+        #return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+        return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress)
     if request.method == "POST":
         users.csrf_check()
-        skill_id = request.form["skill"]   
-        place_id = request.form["place"] 
-        disturbance_id = request.form["disturbance"] 
+        # skill_id = request.form["skill"]   
+        # place_id = request.form["place"] 
+        # disturbance_id = request.form["disturbance"] 
         repeats = request.form["repeats"]
+        plan_id = request.form["plan_id"]
+        print(f"in function markprogress plan id {plan_id}")
         print(f"repeats: {repeats}") #debug print(remove)
-        plan_id = dog.find_plan_id(dog_id, skill_id, place_id, disturbance_id)
+  #      plan_id = dog.find_plan_id(dog_id, skill_id, place_id, disturbance_id)
         dog.mark_progress(plan_id, repeats)
         plan_progress = dog.plan_progress(dog_id)
         total_progress = dog.get_total_progress(dog_id) #this line is in wrong places and causes wrong report output
@@ -128,7 +131,7 @@ def markprogress():
         places = dog.get_places(session["dog_id"]) #needed for reporting form
         disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form
         prog = dog.get_skill_progress(dog_id)
-        return render_template("/markprogress.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+        return render_template("/markprogress.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress)
 
 @app.route("/modify_plan", methods=["GET", "POST"])
 def modify_plan():

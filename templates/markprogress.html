@@ -4,7 +4,7 @@
 
 <h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}}:</h2>
 
-<div class="list">
+<!-- <div class="list">
   <p>
     <p><legend>Kuittaa koulutus tehdyksi </legend></p>
     <p>Anna negatiivinen luku peruaksesi väärin raportoituja koulutuksia</p><br>
@@ -34,9 +34,30 @@
         <input type="submit" value="Kuittaa koulutus">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       </form>
-  
+   -->
     </p>
   
+Vaihtoehtoinen toteutus
+<label for="repeats">Valitse koulutus (id | taito | paikka | häiriö | nykyiset toistot | tavoitemäärä):</label> 
+
+<div class="big_select">
+<form action="/markprogress", method="post">
+    Koulutus<select name="plan_id" id="plan_id">
+    {% for x in plan_progress %}
+    <option value={{x.id}}> {{x.id}} | {{x.skill}} | {{x.place}}  | {{x.disturbance}} | {{x.repeated}} | {{x.target_repeats}}</option>
+    {% endfor %}
+    </select><br>
+  </select>
+  <!-- <label for="repeats">Toistojen määrä</label> -->
+  Toistojen määrä <input name="repeats" type="number" value="0"/>
+  <br><br>
+  <input type="submit" value="Kuittaa koulutus">
+    <!-- <input type="submit" value="Valitse koulutus"> -->
+    <!-- <input type="hidden" name="change_item" value="targets"> -->
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
+</form>
+
+
 
     <!-- original version with reporting single training per single click -->
 <!-- <div class="list"> 
