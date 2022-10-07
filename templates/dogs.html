@@ -4,6 +4,7 @@
 
 <h2>Käyttäjän {{session.user_name}}  koirat </h2>
 
+{% if dogs %}
 <div class="list">
         <ul>
             {% for dog in dogs %}
@@ -11,5 +12,8 @@
             {% endfor %}
         </ul> 
 </div>
+{% else %}
+<p>Ei koiria</p>
+{% endif %}
 
 {% endblock %}

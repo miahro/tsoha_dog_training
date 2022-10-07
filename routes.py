@@ -72,6 +72,8 @@ def dogs():
     else: 
         user_id = users.user_id()
         dognames = dog.list_dogs(user_id) 
+        if len(dognames)==0:
+            dognames==None
         return render_template("dogs.html", dogs=dognames)
 
 
@@ -81,7 +83,7 @@ def add_dog():
         session["error_message"]="Et ole kirjautunut sisään"
         return redirect("/error")
     if request.method == "GET":
-        return render_template("add_dog.html")
+        return render_template("/add_dog.html")
     if request.method == "POST":
         users.csrf_check()
         name = request.form["dogname"]
@@ -90,9 +92,9 @@ def add_dog():
             return redirect("/error")
         if dog.add_dog_name(name, users.user_id()):
             dognames = dog.list_dogs(session["user_id"])
-            return render_template("dogs.html", dogs=dognames)
+            return render_template("/dogs.html", dogs=dognames, msg="Koiran lisäys onnistui")
         else:
-            session["error_message"]="Koiran lisäys ei onnistunut"
+            session["error_message"]="Koiran lisäys ei onnistunut - käyttäjällä ei voi olla kahta samannimistä koiraa"
             return redirect("/error")
 
 
@@ -136,7 +138,7 @@ def markprogress():
         prog = dog.get_skill_progress(dog_id)
         plan_progress = dog.plan_progress(dog_id)
         total_progress = dog.get_total_progress(dog_id) 
-        return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress)
+        return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress, msg="Koulutus kuitattu tehdyksi")
 
 @app.route("/modify_plan", methods=["GET", "POST"])
 def modify_plan():
@@ -161,7 +163,9 @@ def modify_plan():
                 session["error_message"]="Taidossa tulee olla 1-30 merkkiä"
                 return redirect("/error")
             else:
-                plan.add_skill(newskill)
+                if not plan.add_skill(newskill):
+                    session["error_message"]="Taito on jo olemassa"
+                    return redirect("/error")
         elif change_item == "place":
             newplace=request.form["newplace"].lower()
             if not check_length(newplace, 1, 30):
@@ -198,7 +202,7 @@ def modify_plan():
             return redirect("/error")
         plan_progress = dog.plan_progress(dog_id)        
         hidden_items = dog.hidden_items(dog_id)
-        return render_template("/modify_plan.html",hidden_items=hidden_items, plan_progress=plan_progress)
+        return render_template("/modify_plan.html",hidden_items=hidden_items, plan_progress=plan_progress, msg="Koulutusohjelman muokkaus tehty onnistuneesti")
 
 @app.route("/change_targets", methods=["GET", "POST"])
 def change_targets(plan_items=None):

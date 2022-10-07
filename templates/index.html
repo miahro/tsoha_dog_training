@@ -3,11 +3,11 @@
 {% block content %}
 <h2>Etusivu</h2>
 
-<p>
+<!-- <p>
 {% if msg %}
 {{msg}}
 {% endif %}
-</p>
+</p> -->
 
 {% if session.user_id %}
 Olet kirjautunut sisään nimellä <b>{{ session.user_name }}</b>. <a href="/logout">Kirjaudu ulos</a>

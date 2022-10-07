@@ -26,16 +26,19 @@
         {% endif %}
     </ul>
 </nav>
-
+{% if msg %}
+<p>{{msg}}</p>
+{% endif %}
 <p>
 {% if session.user_name %}
 Kirjautunut käyttäjä: {{session.user_name}}
 {% endif %}
 </p>
-
 <p>
     {% if session.dog_name %}
     Valittu koira: {{session.dog_name}}
+    {% else %}
+    Koiraa ei valittu
     {% endif %}
 </p>
  
