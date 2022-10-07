@@ -2,153 +2,62 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}}:</h2>
+<h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}} koulutusohjelma:</h2>
 
-<!-- <div class="list">
-  <p>
-    <p><legend>Kuittaa koulutus tehdyksi </legend></p>
-    <p>Anna negatiivinen luku peruaksesi väärin raportoituja koulutuksia</p><br>
-    <form action="/markprogress", method="post">
-        <label for="skill">Valitse taito:</label>
-        <select name="skill" id="skill">
-        {% for s in skills %}
-        <option value = {{s.id}}>{{s.skill}}</option> 
-        {% endfor %}
-        </select>
-        <label for="place">Valitse paikka:</label>
-        <select name="place" id="place">
-        {% for p in places %}
-        <option value = {{p.id}}>{{p.place}}</option> 
-        {% endfor %}
-        </select>
-        <label for="disturbance">Valitse häiriö:</label>
-        <select name="disturbance" id="disturbance">
-        {% for d in disturbances %}
-        <option value = {{d.id}} > {{d.disturbance}}  </option> 
-        {% endfor %}
-        </select>
-        <label for="repeats">Toistojen määrä</label>
-        <input name="repeats" type="number" value="0"/>
-
-        <br><br>
-        <input type="submit" value="Kuittaa koulutus">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-      </form>
-   -->
-    </p>
-  
-Vaihtoehtoinen toteutus
 <label for="repeats">Valitse koulutus (id | taito | paikka | häiriö | nykyiset toistot | tavoitemäärä):</label> 
-
-<div class="big_select">
 <form action="/markprogress", method="post">
     Koulutus<select name="plan_id" id="plan_id">
     {% for item in plan_progress %}
-    <option value={{item.id}}> {{item.id}} | {{item.skill}} | {{item.place}}  | {{item.disturbance}} | {{item.repeated}} | {{item.target_repeats}}</option>
+      <option value={{item.id}}> {{item.id}} | {{item.skill}} | {{item.place}}  | {{item.disturbance}} | {{item.repeated}} | {{item.target_repeats}}</option>
     {% endfor %}
     </select><br>
-  </select>
-  <!-- <label for="repeats">Toistojen määrä</label> -->
-  Toistojen määrä <input name="repeats" type="number" value="0"/>
-  <br><br>
+  Toistojen määrä <input name="repeats" type="number" value="0"/><br><br>
   <input type="submit" value="Kuittaa koulutus">
-    <!-- <input type="submit" value="Valitse koulutus"> -->
-    <!-- <input type="hidden" name="change_item" value="targets"> -->
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
 </form>
 
-
-
-    <!-- original version with reporting single training per single click -->
-<!-- <div class="list"> 
-<p>
-  <p><legend>Kuittaa koulutus tehdyksi </legend></p>
-  <form action="/markprogress", method="post">
-      <label for="skill">Valitse taito:</label>
-      <select name="skill" id="skill">
-      {% for s in skills %}
-      <option value = {{s.id}}>{{s.skill}}</option> 
-      {% endfor %}
-      </select>
-      <label for="place">Valitse paikka:</label>
-      <select name="place" id="place">
-      {% for p in places %}
-      <option value = {{p.id}}>{{p.place}}</option> 
-      {% endfor %}
-      </select>
-      <label for="disturbance">Valitse häiriö:</label>
-      <select name="disturbance" id="disturbance">
-      {% for d in disturbances %}
-      <option value = {{d.id}} > {{d.disturbance}}  </option> 
-      {% endfor %}
-      </select>
-      <br><br>
-      <input type="submit" value="Kuittaa koulutus">
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    </form>
-
-  </p> -->
-
-
 <p>Koko koulutussuunnitelman edistyminen: {{total_progress}} %</p>
-          
-        <p>Edistyminen taidoittain:</p>
-        <table style="width:50%">
-            <tr>
-              <th>Taito</th>
-              <th>Edistyminen</th>
-            </tr>
-            
-            {% for item in progress %}
-            <tr>
-            <td>{{item.skill}}</td>
-              <td>{{item.achieved}} %</td>
-            </tr>
-              {% endfor %}           
-          </table> 
-
-</div>
-
+<p>Edistyminen taidoittain:</p>
+<table style="width:50%">
+  <tr>
+    <th>Taito</th>
+    <th>Edistyminen</th>
+  </tr>            
+  {% for item in progress %}
+  <tr>
+    <td>{{item.skill}}</td>
+    <td>{{item.achieved}} %</td>
+  </tr>
+  {% endfor %}           
+</table> 
 
 <p>Koulutuksen yksityiskohdat:</p>
-<!-- this is not smart way, better would be to 
-show by skill, i.e. selection box for skill
-to be implemented if feasible
-as backup plan, this will do -->
 
 <button onclick="showDetails()">Näytä kaikki / piilota kaikki</button>
-          
 <div id="details" hidden>
   <div class="details">
-      <table style="width:100%">
-        <tr>
-          <th>Taito</th>
-          <th>Paikka </th>
-          <th>Häiriö</th>
-          <th>Toistoja</th>
-          <th>Tavoite</th>
-        </tr>
-        
-        {% for x in plan_progress %}
-        <tr>
+    <table style="width:100%">
+      <tr>
+        <th>Taito</th>
+        <th>Paikka </th>
+        <th>Häiriö</th>
+        <th>Toistoja</th>
+        <th>Tavoite</th>
+      </tr>
+      {% for x in plan_progress %}
+      <tr>
         <td>{{x.skill}}</td>
-          <td>{{x.place}} </td>
-          <td>{{x.disturbance}} </td>
-          <td>{{x.repeated}} </td>
-          <td>{{x.target_repeats}} </td>
-        </tr>
-          {% endfor %}
-        
-      </table> 
-
-
-
-
-    </p>
+        <td>{{x.place}} </td>
+        <td>{{x.disturbance}} </td>
+        <td>{{x.repeated}} </td>
+        <td>{{x.target_repeats}} </td>
+      </tr>
+      {% endfor %}
+    </table> 
   </div>
 </div>
 
-
+<!-- for hiding full details of training program  -->
 <script>
   function showDetails() {
       var x = document.getElementById("details");

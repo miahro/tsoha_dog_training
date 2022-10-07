@@ -6,11 +6,8 @@
 
 <p>
 Koiran valinta onnistui, valittu koira {{session.dog_name}}. <br>
-Automaattinen uudelleen ohjaus <span id="countdowntimer">10 </span> sekunnissa
-
-
-<meta http-equiv="Refresh" content="10; url=/markprogress" />
-
+Automaattinen uudelleen ohjaus <span id="countdowntimer">5 </span> sekunnissa
+<meta http-equiv="Refresh" content="5; url=/markprogress" />
 </p>
 
  {% for dog in dogs %}
@@ -20,7 +17,7 @@ Automaattinen uudelleen ohjaus <span id="countdowntimer">10 </span> sekunnissa
 
 
 <script type="text/javascript">
-    var timeleft = 10;
+    var timeleft = 5;
     var downloadTimer = setInterval(function(){
     timeleft--;
     document.getElementById("countdowntimer").textContent = timeleft;
