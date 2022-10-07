@@ -124,9 +124,9 @@ def markprogress():
         session["error_message"]="Koiraa ei valittu"
         return redirect("/error")    
     if request.method == "GET":
-        skills = dog.get_skills(session["dog_id"]) #needed for reporting form, is it? test
-        places = dog.get_places(session["dog_id"]) #needed for reporting form, is it? test
-        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form, is it? test
+    #    skills = dog.get_skills(session["dog_id"]) #needed for reporting form, is it? test
+    #    places = dog.get_places(session["dog_id"]) #needed for reporting form, is it? test
+    #    disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form, is it? test
         prog = dog.get_skill_progress(dog_id)
         plan_progress = dog.plan_progress(dog_id)        
         total_progress = dog.get_total_progress(dog_id)
@@ -138,15 +138,15 @@ def markprogress():
         # disturbance_id = request.form["disturbance"] 
         repeats = request.form["repeats"]
         plan_id = request.form["plan_id"]
-        print(f"in function markprogress plan id {plan_id}")
-        print(f"repeats: {repeats}") #debug print(remove)
+ #       print(f"in function markprogress plan id {plan_id}") #debug print remove
+ #       print(f"repeats: {repeats}") #debug print(remove)
   #      plan_id = dog.find_plan_id(dog_id, skill_id, place_id, disturbance_id)
         dog.mark_progress(plan_id, repeats)
         plan_progress = dog.plan_progress(dog_id)
         total_progress = dog.get_total_progress(dog_id) #this line is in wrong places and causes wrong report output
-        skills = dog.get_skills(session["dog_id"]) #needed for reporting form, or is it? test
-        places = dog.get_places(session["dog_id"]) #needed for reporting form, or is it? check
-        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form, or is it? check
+#        skills = dog.get_skills(session["dog_id"]) #needed for reporting form, or is it? test
+#        places = dog.get_places(session["dog_id"]) #needed for reporting form, or is it? check
+#        disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form, or is it? check
         prog = dog.get_skill_progress(dog_id)
         return render_template("/markprogress.html",progress=prog, plan_progress=plan_progress, total_progress=total_progress)
 

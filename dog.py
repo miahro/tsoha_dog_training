@@ -174,7 +174,8 @@ def mark_progress(plan_id, repeats):
     try:
         sql = '''UPDATE Progress
                 SET repeated = GREATEST(repeated + :repeats, 0)
-                WHERE id=:plan_id'''
+                WHERE plan_id=:plan_id'''
+#                WHERE id=:plan_id'''
         result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
         db.session.commit()
 #        print("module dog mark_progress succesful") #debug print remove
