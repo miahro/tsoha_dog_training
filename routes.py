@@ -160,16 +160,19 @@ def modify_plan():
         session["error_message"]="Koiraa ei valittu"
         return redirect("/error")    
     dog_id = dog.get_dog_id()
-    skills = dog.get_skills(session["dog_id"]) #needed for reporting form? check
-    places = dog.get_places(session["dog_id"]) #needed for reporting form? check
-    disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form? check
-    prog = dog.get_skill_progress(dog_id)
+  #  skills = dog.get_skills(session["dog_id"]) #needed for reporting form? check
+  #  places = dog.get_places(session["dog_id"]) #needed for reporting form? check
+  #  disturbances = dog.get_disturbances(session["dog_id"]) #needed for reporting form? check
+ #   prog = dog.get_skill_progress(dog_id)
     plan_progress = dog.plan_progress(dog_id)        
-    total_progress = dog.get_total_progress(dog_id)  
+ #   total_progress = dog.get_total_progress(dog_id)  
     hidden_items = dog.hidden_items(dog_id)  
+    print(hidden_items) #debug print remove
     if request.method =="GET":
 #        print("routes.add_place with GET call") #debug print remove
-        return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+        return render_template("/modify_plan.html",hidden_items=hidden_items, plan_progress=plan_progress)
+#        return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress)
+#        return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
     if request.method =="POST":
  #       print("routes.add_place with POST call") #debug print remove
  #       print(request.form["change_item"]) #debug print remove
@@ -203,31 +206,39 @@ def modify_plan():
             print(f"modify plan change item targets, plan id {plan_id}") #debug print remove
             return render_template("/change_targets.html", plan_items=plan_items)
         elif change_item =="target_change":
-            print("we got to target change before crashing")
+    #        print("we got to target change before crashing")
             newtarget = int(request.form["newtarget"])
             plan_id = int(request.form["plan_id"])
             if newtarget == 0:
-                print(plan_id)
+     #           print(plan_id)
                 dog.remove_from_plan(plan_id)
                 plan_items = dog.get_plan_items(plan_id)
-                return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
+#                return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances)
             else:
                 dog.change_plan_targets(plan_id, newtarget)
-            print(f"in modify plan, target_change detected with change_item {change_item}, newtarget {newtarget}")
+   #         print(f"in modify plan, target_change detected with change_item {change_item}, newtarget {newtarget}")
         elif change_item == "add_training":
-            print("we got to add new training in function modify_plan") #debug print remove
+    #        print("we got to add new training in function modify_plan") #debug print remove
             add_training_id = int(request.form["add_training"])
-            print(f"in add training part of modify pland add_training id {add_training_id}")
+     #       print(f"in add training part of modify pland add_training id {add_training_id}")
             dog.add_new_item(add_training_id)
-            return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+#            return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
         elif change_item == "update_selection":
+#            print(f" update selection dog_id {dog_id}")
             plan.update_selection(dog_id)
-            return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+    #        hidden_items = dog.hidden_items(dog_id)  
+    #        print(hidden_items)
+#            return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
         else:
             session["error_message"]="Tunnistamaton virhe"
             return redirect("/error")
-
-        return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
+   #     prog = dog.get_skill_progress(dog_id)
+        plan_progress = dog.plan_progress(dog_id)        
+  #      total_progress = dog.get_total_progress(dog_id)        
+        hidden_items = dog.hidden_items(dog_id)
+        return render_template("/modify_plan.html",hidden_items=hidden_items, plan_progress=plan_progress)
+#                return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress)
+#        return render_template("/modify_plan.html",hidden_items=hidden_items, progress=prog, plan_progress=plan_progress, total_progress=total_progress, skills=skills, places=places, disturbances=disturbances )
 
 
 

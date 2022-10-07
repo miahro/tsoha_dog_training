@@ -174,8 +174,8 @@ def mark_progress(plan_id, repeats):
     try:
         sql = '''UPDATE Progress
                 SET repeated = GREATEST(repeated + :repeats, 0)
-                WHERE plan_id=:plan_id'''
-#                WHERE id=:plan_id'''
+                WHERE plan_id=:pl
+                WHERE id=:plan_id'''
         result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
         db.session.commit()
 #        print("module dog mark_progress succesful") #debug print remove
@@ -253,15 +253,22 @@ def add_new_item(plan_id):
 #not tested in app!!!
 #error handling?
 def hidden_items(dog_id):
-    sql = '''SELECT Plan.id, SKills.skill, Places.place, Disturbances.disturbance, Plan.target_repeats
-                FROM Dogs, Skills, Places, Disturbances, Plan
-                WHERE   
-                        Plan.dog_id = 1
-                        AND Dogs.id = Plan.dog_id                     
-                        AND  Places.id = Plan.place_id
-                        AND Skills.id = Plan.skill_id
-                        AND Places.id = Plan.place_id
-                        AND Disturbances.id = Plan.disturbance_id
-                        AND Plan.visible=FALSE;'''
-    result = db.session.execute(sql, {"dog_id": dog_id}).fetchall()
+    try:
+        sql = '''SELECT Plan.id, SKills.skill, Places.place, Disturbances.disturbance, Plan.target_repeats
+                    FROM Dogs, Skills, Places, Disturbances, Plan
+                    WHERE   
+                            Plan.dog_id =:dog_id
+                            AND Dogs.id = Plan.dog_id                     
+                            AND  Places.id = Plan.place_id
+                            AND Skills.id = Plan.skill_id
+                            AND Places.id = Plan.place_id
+                            AND Disturbances.id = Plan.disturbance_id
+                            AND Plan.visible=FALSE;'''
+        result = db.session.execute(sql, {"dog_id": dog_id}).fetchall()
+#        print("hidden items function ok")
+        return result
+    except:
+#        print("something wrong in hidden items function")
+        return False
+
 #error handling?

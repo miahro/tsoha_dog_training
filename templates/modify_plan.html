@@ -24,7 +24,7 @@
 
 
 <p><b>Lisää uusi koulutus</b></p>
-
+{% if hidden_items %}
 <label for="targets">Valitse koulutus (id | taito | paikka | häiriö | tavoitemäärä):</label>
 
 <div class="big_select">
@@ -52,10 +52,21 @@
     <input type="hidden" name="change_item" value="update_selection">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
 </form>
+{% else %}
+<p> Ei uusia koulutuksia valittavana, lisää ensin taito, paikka tai häiriö ja päivitä koulutusvaihtoehdot</p>
+{% endif %}
 
 
+<label for="targets">Päivitä koulutusvaihtoehdot:</label>
+<div class="big_select">
+<form action="/modify_plan" method="post">
+    Päivitä <input type="submit" value="Päivitä koulutusvaihtoehdot">
+    <input type="hidden" name="change_item" value="update_selection">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
+</form>
 
 
+    
 <p><b>Uuden taito-, paikka- tai häiriövaihtoehdon lisäys:</b></p>
 
 <form action="/modify_plan" method="post">
