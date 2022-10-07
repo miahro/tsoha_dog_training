@@ -93,3 +93,16 @@ def update_selection(dog_id):
                 (SELECT Plan.skill_id, Plan.place_id, Plan.disturbance_id FROM Plan WHERE plan.skill_id=skills.id AND Plan.place_id=Places.id AND Plan.disturbance_id=Disturbances.id);'''
     db.session.execute(sql, {"dog_id": dog_id})
     db.session.commit()
+    update_progress(dog_id)
+
+#SQL error handling?
+def update_progress(dog_id):
+    sql = '''  INSERT INTO Progress (plan_id, repeated)
+            SELECT Plan.id, 0
+            FROM Plan
+            LEFT JOIN Progress
+            ON Plan.id = Progress.plan_id
+            WHERE Progress.plan_id is NULL;'''
+
+    db.session.execute(sql, {"dog_id": dog_id})
+    db.session.commit()

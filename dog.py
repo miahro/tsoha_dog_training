@@ -171,18 +171,26 @@ def get_disturbances(dog_id):
 def mark_progress(plan_id, repeats):
     if repeats == 0:
         return True
-    try:
-        sql = '''UPDATE Progress
+    print(f"plan_id {plan_id} repeats: {repeats}")
+    sql = '''UPDATE Progress
                 SET repeated = GREATEST(repeated + :repeats, 0)
-                WHERE plan_id=:pl
                 WHERE id=:plan_id'''
-        result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
-        db.session.commit()
+    result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
+    db.session.commit()
+
+
+#    try:
+#        sql = '''UPDATE Progress
+#                SET repeated = GREATEST(repeated + :repeats, 0)
+#                WHERE plan_id=:pl
+#                WHERE id=:plan_id'''
+#        result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
+#        db.session.commit()
 #        print("module dog mark_progress succesful") #debug print remove
-    except:
+#    except:
 #        print("something goes wrong in module dog function mark_progress")
-        return False
-    return True
+#        return False
+#    return True
 
 
 def find_plan_id(dog_id, skill_id, place_id, disturbance_id):
@@ -249,6 +257,10 @@ def add_new_item(plan_id):
     result = db.session.execute(sql, {"plan_id":plan_id})
     db.session.commit()
     return True
+
+def update_progress_items(dog_id):
+    pass
+
 
 #not tested in app!!!
 #error handling?
