@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}} koulutusohjelma:</h2>
+<h2> Käyttäjän {{session.user_name}} koiran {{session.dog_name}} koulutusohjelma:</h2>
 
 <label for="repeats">Valitse koulutus (id | taito | paikka | häiriö | nykyiset toistot | tavoitemäärä):</label> 
 <form action="/markprogress", method="post">
@@ -11,7 +11,7 @@
       <option value={{item.id}}> {{item.id}} | {{item.skill}} | {{item.place}}  | {{item.disturbance}} | {{item.repeated}} | {{item.target_repeats}}</option>
     {% endfor %}
     </select><br>
-  Toistojen määrä <input name="repeats" type="number" value="0"/><br><br>
+  Toistojen määrä <input name="repeats" type="number" value="0" mix="-1000" max="1000"/><br><br>
   <input type="submit" value="Kuittaa koulutus">
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
 </form>

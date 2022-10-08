@@ -111,7 +111,8 @@ def dogchoice(dog_id):
             #return redirect("error.html")
         session["dog_id"]=dog_id
         session["dog_name"]=dog.get_name(dog_id)
-        return render_template("dogchoice.html")  
+        return redirect("/markprogress")
+#        return render_template("dogchoice.html")  
     else: #should not be possible, but here just for safety
         session["error_message"]="Tunnistamaton virhe"
         return redirect("/error")            
@@ -163,9 +164,10 @@ def modify_plan():
                 session["error_message"]="Taidossa tulee olla 1-30 merkkiä"
                 return redirect("/error")
             else:
-                if not plan.add_skill(newskill):
-                    session["error_message"]="Taito on jo olemassa"
-                    return redirect("/error")
+                plan.add_skill(newskill)
+                #if not plan.add_skill(newskill):
+                #    session["error_message"]="Taito on jo olemassa"
+                #    return redirect("/error")
         elif change_item == "place":
             newplace=request.form["newplace"].lower()
             if not check_length(newplace, 1, 30):
