@@ -1,9 +1,9 @@
-import os
-from db import db
+#import os
+import secrets
 from flask import abort, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
-import secrets
-import dog
+from db import db
+#import dog
 
 def login(username, password):
     sql = "SELECT id, password FROM Users WHERE username=:username"
@@ -11,25 +11,20 @@ def login(username, password):
     user = result.fetchone()
     if not user:
         return False
-    else:
-        if check_password_hash(user.password, password):
-            session["user_id"] = user.id
-            session["user_name"] = username
-            session["csrf_token"] = secrets.token_hex(16)            
-            return True
-        else:
-            return False
+    if check_password_hash(user.password, password):
+        session["user_id"] = user.id
+        session["user_name"] = username
+        session["csrf_token"] = secrets.token_hex(16)
+        return True
+    return False
 
 def user_id():
     return session.get("user_id")
 
 def is_logged_in():
-    if user_id() != None:
-        return True
-    else:
-        return False
+    return user_id() is not None
 
-def logout(): 
+def logout():
     try:
         session.pop("user_id", None)
         session.pop("user_name", None)

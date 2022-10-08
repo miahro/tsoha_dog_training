@@ -1,6 +1,6 @@
-import os
+#import os
+from flask import session
 from db import db
-from flask import abort, request, session
 import plan
 
 #SQL error handling?
@@ -13,7 +13,7 @@ def list_dogs(owner_id):
 def add_dog_name(dogname, owner_id):
     dogname = dogname.capitalize()
     try:
-        sql = '''INSERT INTO Dogs (dogname, owner_id) 
+        sql = '''INSERT INTO Dogs (dogname, owner_id)
             VALUES (:dogname, :owner_id) RETURNING id'''
         result = db.session.execute(sql, {"dogname":dogname, "owner_id":owner_id})
         [dog_id] = result.fetchone()
@@ -21,7 +21,7 @@ def add_dog_name(dogname, owner_id):
     except:
         return False
     plan.gen_default_plan(dog_id)
-    plan.gen_default_progress(dog_id) 
+    plan.gen_default_progress(dog_id)
     return True
 
 def plan_progress(dog_id):
@@ -91,12 +91,12 @@ def get_name(dog_id):
 
 def mark_progress(plan_id, repeats):
     if repeats == 0:
-        return True
+        return
     print(f"plan_id {plan_id} repeats: {repeats}")
     sql = '''UPDATE Progress
                 SET repeated = GREATEST(repeated + :repeats, 0)
                 WHERE id=:plan_id'''
-    result = db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
+    db.session.execute(sql, {"plan_id":plan_id, "repeats":repeats})
     db.session.commit()
 
 def find_plan_id(dog_id, skill_id, place_id, disturbance_id):
@@ -108,11 +108,13 @@ def find_plan_id(dog_id, skill_id, place_id, disturbance_id):
                     AND Plan.place_id=:place_id
                     AND Plan.disturbance_id=:disturbance_id
             ;'''
-    result = db.session.execute(sql, {"dog_id":dog_id, "skill_id":skill_id, "place_id":place_id, "disturbance_id":disturbance_id}).fetchone()
+    result = db.session.execute(sql, {"dog_id":dog_id, "skill_id":skill_id,\
+                        "place_id":place_id, "disturbance_id":disturbance_id}).fetchone()
     return result[0]
 
 def get_plan_items(plan_id):
-    sql =   '''SELECT Plan.id, SKills.skill, Places.place, Disturbances.disturbance, Plan.target_repeats
+    sql =   '''SELECT   Plan.id, SKills.skill, Places.place,
+                        Disturbances.disturbance, Plan.target_repeats
                 FROM Dogs, Skills, Places, Disturbances, Plan
                 WHERE   Plan.id =:plan_id
                         AND Dogs.id = Plan.dog_id                     
@@ -129,7 +131,7 @@ def remove_from_plan(plan_id):
             SET visible=FALSE
             WHERE Plan.id=:plan_id;
             '''
-    result = db.session.execute(sql, {"plan_id":plan_id})
+    db.session.execute(sql, {"plan_id":plan_id})
     db.session.commit()
     return True
 
@@ -139,7 +141,7 @@ def change_plan_targets(plan_id, newtarget):
             SET target_repeats=:newtarget
             WHERE Plan.id=:plan_id
           '''
-    result = db.session.execute(sql, {"plan_id":plan_id, "newtarget":newtarget})
+    db.session.execute(sql, {"plan_id":plan_id, "newtarget":newtarget})
     db.session.commit()
     return True
 
@@ -148,13 +150,14 @@ def add_new_item(plan_id):
             SET visible=TRUE
             WHERE Plan.id=:plan_id
           '''
-    result = db.session.execute(sql, {"plan_id":plan_id})
+    db.session.execute(sql, {"plan_id":plan_id})
     db.session.commit()
     return True
 
 
 def hidden_items(dog_id):
-    sql = '''SELECT Plan.id, SKills.skill, Places.place, Disturbances.disturbance, Plan.target_repeats
+    sql = '''SELECT Plan.id, SKills.skill,
+                    Places.place, Disturbances.disturbance, Plan.target_repeats
                     FROM Dogs, Skills, Places, Disturbances, Plan
                     WHERE   
                             Plan.dog_id =:dog_id
@@ -180,7 +183,7 @@ def get_skills(dog_id):
             ORDER BY Skills.id
             '''
     result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
-    return result    
+    return result
 
 #not used in current app: left here for possible future versions
 def get_places(dog_id):
@@ -194,7 +197,7 @@ def get_places(dog_id):
             ORDER BY Places.id
             ;'''
     result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
-    return result    
+    return result
 
 #not used in current app: left here for possible future versions
 def get_disturbances(dog_id):
@@ -208,4 +211,4 @@ def get_disturbances(dog_id):
             ORDER BY Disturbances.id
             ;'''
     result = db.session.execute(sql, {"dog_id":dog_id}).fetchall()
-    return result    
+    return result

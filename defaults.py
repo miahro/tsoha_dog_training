@@ -16,4 +16,4 @@ default_disturbances =  ["ei häiriötä",\
                         "toinen koira"\
                         ]
 
-default_target_repeats = 10
+DEFAULT_TARGET_REPEATS = 10

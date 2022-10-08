@@ -1,10 +1,9 @@
-from app import app
-from flask import render_template, request, redirect, session, abort, url_for
+import secrets
+from flask import render_template, request, redirect, session, abort
 import users
 import dog
 import plan
-import secrets
-#import app
+from app import app
 
 @app.route("/")
 def index(msg=''):  #msg is message for main page, default empty
@@ -21,17 +20,15 @@ def login():
         session["csrf_token"] = secrets.token_hex(16)
         if users.login(username, password):
             return render_template("index.html", msg="Sisäänkirjautuminen onnistui")
-        else:
-            session["error_message"]="Väärä tunnus tai salasana"
-            return redirect("error")
+        session["error_message"]="Väärä tunnus tai salasana"
+        return redirect("error")
 
 @app.route("/logout")
 def logout():
     if users.logout(): #succesfull logout return to main screen (info not logged in)
         return redirect("/")
-    else: #trying to logout when not logged in return error (not fatal)
-        session["error_message"]="Uloskirjautuminen ei onnistunut"
-        return redirect("/error")
+    session["error_message"]="Uloskirjautuminen ei onnistunut"
+    return redirect("/error")
 
 @app.route("/error", methods=["GET"])
 def error(message=''):
@@ -59,27 +56,25 @@ def register():
             session["error_message"]="Salasana on tyhjä"
             return redirect("/error")
         if users.register(username, password1):
-            return render_template("index.html", msg="Käyttäjätunnuksen " + username + " luonti onnistui")
-        else:
-            session["error_message"]="Käyttäjätunnus on jo olemassa"
-            return redirect("/error")
+            return render_template \
+                ("index.html", msg="Käyttäjätunnuksen " + username + " luonti onnistui")
+        session["error_message"]="Käyttäjätunnus on jo olemassa"
+        return redirect("/error")
 
 @app.route("/dogs", methods = ["GET"])
 def dogs():
-    if not users.is_logged_in(): 
+    if not users.is_logged_in():
         session["error_message"]="Et ole kirjautunut sisään"
         return redirect("/error")
-    else: 
-        user_id = users.user_id()
-        dognames = dog.list_dogs(user_id) 
-        if len(dognames)==0:
-            dognames==None
-        return render_template("dogs.html", dogs=dognames)
+    user_id = users.user_id()
+    dognames = dog.list_dogs(user_id)
+    if len(dognames)==0:
+        dognames is None
+    return render_template("dogs.html", dogs=dognames)
 
-
-@app.route("/add_dog", methods =["GET", "POST"]) 
+@app.route("/add_dog", methods =["GET", "POST"])
 def add_dog():
-    if not users.is_logged_in(): 
+    if not users.is_logged_in():
         session["error_message"]="Et ole kirjautunut sisään"
         return redirect("/error")
     if request.method == "GET":
@@ -93,44 +88,44 @@ def add_dog():
         if dog.add_dog_name(name, users.user_id()):
             dognames = dog.list_dogs(session["user_id"])
             return render_template("/dogs.html", dogs=dognames, msg="Koiran lisäys onnistui")
-        else:
-            session["error_message"]="Koiran lisäys ei onnistunut - käyttäjällä ei voi olla kahta samannimistä koiraa"
-            return redirect("/error")
+        session["error_message"]="Koiran lisäys ei onnistunut \
+            - käyttäjällä ei voi olla kahta samannimistä koiraa"
+        return redirect("/error")
 
 
-@app.route("/dogchoice/<int:dog_id>", methods =["GET"]) 
+@app.route("/dogchoice/<int:dog_id>", methods =["GET"])
 def dogchoice(dog_id):
-    if not users.is_logged_in(): 
+    if not users.is_logged_in():
         session["error_message"]="Et ole kirjautunut sisään"
-        return redirect("/error")       
+        return redirect("/error")
     if request.method =="GET":
         if users.user_id() != dog.get_owner(dog_id):
-            abort(403) #this should only happen when user is manually setting address for other dog than own
-            #hence abort should be justified action rather than raising non-fatal error alternative below
+            abort(403) #should only happen if user is manually sets address for other dog than own
+            #hence abort should be justified action
+            # rather than raising non-fatal error alternative below
             #session["error_message"]="Et ole koiran omistaja"
             #return redirect("error.html")
         session["dog_id"]=dog_id
         session["dog_name"]=dog.get_name(dog_id)
         return redirect("/markprogress")
-#        return render_template("dogchoice.html")  
-    else: #should not be possible, but here just for safety
-        session["error_message"]="Tunnistamaton virhe"
-        return redirect("/error")            
+    session["error_message"]="Tunnistamaton virhe" #should not be possible, but here just for safety
+    return redirect("/error")
 
-@app.route("/markprogress", methods =["GET", "POST"]) 
-def markprogress(): 
-    if not users.is_logged_in(): 
+@app.route("/markprogress", methods =["GET", "POST"])
+def markprogress():
+    if not users.is_logged_in():
         session["error_message"]="Et ole kirjautunut sisään"
-        return redirect("/error")       
+        return redirect("/error")
     dog_id = dog.get_dog_id()
     if dog_id is None:
         session["error_message"]="Koiraa ei valittu"
-        return redirect("/error")    
+        return redirect("/error")
     if request.method == "GET":
         prog = dog.get_skill_progress(dog_id)
-        plan_progress = dog.plan_progress(dog_id)        
+        plan_progress = dog.plan_progress(dog_id)
         total_progress = dog.get_total_progress(dog_id)
-        return render_template("/markprogress.html", progress = prog, plan_progress=plan_progress, total_progress=total_progress)
+        return render_template("/markprogress.html",\
+                        progress = prog, plan_progress=plan_progress, total_progress=total_progress)
     if request.method == "POST":
         users.csrf_check()
         repeats = request.form["repeats"]
@@ -138,23 +133,25 @@ def markprogress():
         dog.mark_progress(plan_id, repeats)
         prog = dog.get_skill_progress(dog_id)
         plan_progress = dog.plan_progress(dog_id)
-        total_progress = dog.get_total_progress(dog_id) 
-        return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress, total_progress=total_progress, msg="Koulutus kuitattu tehdyksi")
+        total_progress = dog.get_total_progress(dog_id)
+        return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress,\
+                total_progress=total_progress, msg="Koulutus kuitattu tehdyksi")
 
 @app.route("/modify_plan", methods=["GET", "POST"])
 def modify_plan():
-    if not users.is_logged_in(): 
+    if not users.is_logged_in():
         session["error_message"]="Et ole kirjautunut sisään"
-        return redirect("/error")        
+        return redirect("/error")
     dog_id = dog.get_dog_id()
     if dog_id is None:
         session["error_message"]="Koiraa ei valittu"
-        return redirect("/error")    
+        return redirect("/error")
     dog_id = dog.get_dog_id()
-    plan_progress = dog.plan_progress(dog_id)        
-    hidden_items = dog.hidden_items(dog_id)  
+    plan_progress = dog.plan_progress(dog_id)
+    hidden_items = dog.hidden_items(dog_id)
     if request.method =="GET":
-        return render_template("/modify_plan.html",hidden_items=hidden_items, plan_progress=plan_progress)
+        return render_template \
+                ("/modify_plan.html",hidden_items=hidden_items, plan_progress=plan_progress)
     if request.method =="POST":
         users.csrf_check()
         change_item = request.form["change_item"]
@@ -163,25 +160,19 @@ def modify_plan():
             if not check_length(newskill, 1, 30):
                 session["error_message"]="Taidossa tulee olla 1-30 merkkiä"
                 return redirect("/error")
-            else:
-                plan.add_skill(newskill)
-                #if not plan.add_skill(newskill):
-                #    session["error_message"]="Taito on jo olemassa"
-                #    return redirect("/error")
+            plan.add_skill(newskill)
         elif change_item == "place":
             newplace=request.form["newplace"].lower()
             if not check_length(newplace, 1, 30):
                 session["error_message"]="Paikassa tulee olla 1-30 merkkiä"
                 return redirect("/error")
-            else:
-                plan.add_place(newplace)
+            plan.add_place(newplace)
         elif change_item == "disturbance":
             newdisturbance=request.form["newdisturbance"].lower()
             if not check_length(newdisturbance, 1, 30):
                 session["error_message"]="Häiriössä tulee olla 1-30 merkkiä"
                 return redirect("/error")
-            else:
-                plan.add_disturbance(newdisturbance)
+            plan.add_disturbance(newdisturbance)
         elif change_item == "targets":
             plan_id=int(request.form["targets"])
             plan_items = dog.get_plan_items(plan_id)
@@ -202,37 +193,36 @@ def modify_plan():
         else:
             session["error_message"]="Tunnistamaton virhe"
             return redirect("/error")
-        plan_progress = dog.plan_progress(dog_id)        
+        plan_progress = dog.plan_progress(dog_id)
         hidden_items = dog.hidden_items(dog_id)
-        return render_template("/modify_plan.html",hidden_items=hidden_items, plan_progress=plan_progress, msg="Koulutusohjelman muokkaus tehty onnistuneesti")
+        return render_template("/modify_plan.html",hidden_items=hidden_items,\
+                plan_progress=plan_progress, msg="Koulutusohjelman muokkaus tehty onnistuneesti")
 
 @app.route("/change_targets", methods=["GET", "POST"])
 def change_targets(plan_items=None):
-    if not users.is_logged_in(): 
+    if not users.is_logged_in():
         session["error_message"]="Et ole kirjautunut sisään"
-        return redirect("/error")    
+        return redirect("/error")
     dog_id = dog.get_dog_id()
-    if dog_id is None: 
+    if dog_id is None:
         session["error_message"]="Koiraa ei valittu"
-        return redirect("/error")    
+        return redirect("/error")
     plan_id = session["plan_id"]
     items = dog.get_plan_items(plan_id)
     for item in items:
         print(item)
     if request.method == "GET":
-   #     plan_progress = dog.plan_progress(dog_id)   #not needed?     
         return render_template("/change_targets.html", plan_items=items)
     if request.method == "POST":
         users.csrf_check()
-        repeats = int(request.form["repeats"]) 
-        
+        repeats = int(request.form["repeats"])
         if repeats == 0:
             dog.remove_from_plan(plan_id)
         return render_template("/change_targets.html", plan_items=items)
 
-def check_length(text, min, max):
-    if len(text)>= min and len(text) <= max:
-        return True
-    else:
-        return False
-
+def check_length(text, min_len, max_len):
+    return len(text)>= min_len and len(text) <= max_len
+#    if len(text)>= min_len and len(text) <= max_len:
+#        return True
+#    else:
+#        return False
