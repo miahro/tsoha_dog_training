@@ -11,7 +11,10 @@ Sovelluksella on seuraavat ominaisuudet:
   * Käyttäjä voi tarkastella ainoastaan omien koiriensa tietoja, ei muiden käyttäjien
   * Uudelle koiralle luodaan (oletus)koulutussuunnitelma, sisältäen tietyt harjoitukset, paikat, häiriöt, ja toistojen määrät
 	* Lähtökohtaisesti oletussuunnitelma on kiinteä vakiosuunnitelma
-   * Optionaalisesti käyttäjä voi muokata suunnitelmaa omalle koiralleen (tämän ominaisuuden toteutus riippuu kuitenkin sovelluksen laajuudesta, jätetään tekemättä mikäli laajenee liikaa)
+  * Optionaalisesti käyttäjä voi muokata suunnitelmaa omalle koiralleen:
+    * muuttaa toistojen tavoitemäärää per harjoitus
+    * poistaa harjoituksia ohjelmasta
+    * lisätä uusia harjoituksia
   * Käyttäjä voi kuitata koiralleen toistoja (tietty harjoitus, tietty paikka, tietty häiriö) tehdyksi
   * Käyttäjälle on olemassa raportointinäkymä, jossa voi koirakohtaisesti seurata koulutussuunnitelman edistymistä / toteutumista
 
@@ -47,8 +50,9 @@ Sovellus on jaettu seuraaviin moduleihin:
     * error.html: yleinen virhesivu, eri virheet ohjataan tänne virhespesifillä viestillä
     * add_dog.html: uuden koiran lisäys
     * dogs.html: käyttäjän koirien listaus
-    * dogchoice.htlm: aktiivisen koiran valinta
     * markprogress.html: koiran koulutuksen raportointi- ja kuittausnäkymä 
+    * modify_plan.html: koulutussuunnitelman muokkausnäkymä
+    * change_targets.html: tavoitetoistomäärien muokkausnäkymä
   * CSS-pohja
     * main.css
   * SQL-skeema:
@@ -62,42 +66,49 @@ Sovellus on jaettu seuraaviin moduleihin:
     * Käyttäjätunnus 1-20 merkkiä
     * Salasana 1-20 merkkiä
     * 1 merkin käyttäjätunnus ja salasana ei ole järkevää, mutta helpomman testauksen vuoksi jätetty näin
+
   * Kirjaudu sisään
+
   * Lisää koira
     * käyttäjä voi lisätä useampia koiria
     * koiran lisäyksen yhteydessä luodaan koiralle oletuskoulutussuunnitelma
-	* Listaa koirat
+
+* Valitse koira
     * listaa käyttjän koirat
     * koiran nimeä klikkaamalla avautuu raporttinäkymä kyseiselle koiralla
-      * raportointinäkymä on kesken
-	* Raportointinäkymästä on linkki suoritettujen koulutusten kuittaamiseen
-    * KESKEN
-	
-	
-## Releasee note 0.3
-	Git-commit XX sisältää ensimmäiset versiot moduleista. Tässä vaiheessa on keskitytty koodin toiminnallisuuteen ja tietokannan toiminnallisuuteen. Päätoimintojen pitäisi toimia. Jotakuinkin toimivia osia ovat: 
-  * käyttäjätunnusten luonti
-  * login / logout
-  * uuden koiran  luonti / lisäys
-    * oletussuunnitelman lisäys uudelle koiralle
-  * Heroku release (välipalautus 2 versio)
-	
-  Totetus on kesken seuraaville:
-  * koulutussuunnitelman raportointinäkymä; toiminto on olemassa, ja tietokantakysely toimii, mutta raportti näyttö on aika kökkö. Päivitetään myöhemmin järkeväksi näytöksi
-  * Suoritettujen koulutusten kuittaus: toiminto toimii, mutta on vähän kökkö. Parannetaan vielä. 
-  * Html sivut:
-    * aiktataulusyistä keskitetty ensin backendin toiminnallisuuteen
-    * html-sivut on jätetty tässä vaiheessa aivan sotkuksi ja kasari-tyylisiksi
-    * nämä korjataan välipalautus 3:ssa
-  * CSS tyylitiedosto: 
-    * kuten html-pohjat, CSS-tyylitiedostolle ei ole yritetty tehdä mitään järkevää tässä vaiheessa
-    * tiedosto on olemassa, jotta nähdään, että se yleensä on käytössä
-    * CSS tiedosto korjataan järkeväksi välipalautus 3:ssa
+    * valittu koira pysyy aktiivisena kunnes valitaan uusi (tai kirjaudutaan ulos)
 
-Toteuttamatta on:
- 
-  * Koulutussuunnitelman muokkaus
-    * saattaaa jäädäkin toteuttamatta, mennään ehkä oletussuunnitelmalla
+* Raportointinäkymässä:
+    * näkee koko koulutusuunnitelman edistymisen prosentteina
+    * taitokohtaisen edistymisen prosenetteina
+    * painamalla "näytä kaikki" näkee jokaisen yksittäisen harjoituksen (taito/paikka/häiriö/toistoja/tavoite)
+    * tehtyjen koulutusen kuittaus: valitse alasvetovalikosta haluttu koulutus (taito/paikka/häiriö/nykyiset toistot/tavoite)
+      * syöttämällä toistojen määrä ja kuittaa koulutus voi kuitata toistoja tehdyiksi
+      * syöttämällä negatiivisen luvun voi perua väärin tehtyjä kuittauksia (nykyiset toistot on kuitenkin aina vähintään nolla)
 
+* Muokkaa ohjelmaa näkymä:
+  * koirakohtaisen suunnitelman tavoitemäärien muuttaminen: 
+    * valitse alasvetovalikosta koulutus (id/taito/paikka/häiriö/tavoitemäärä) ja paina valitse koulutus
+    * avatutuvassa näkymässä voit syöttää uuden tavoitteen
+      * syöttämllä nolla, koulutus poistuu ohjelmasta
+      * valitsemalla "ei muutosta / palaa" palataan edelliseen näkymään ilman muutoksia
+  * Lisää uusi koulutus:
+    * Päivitä koulutusvaihetoehdot päivittää valittavien koulutusten valikkoon käyttjän tai muiden käyttäjien lisäämät koulutusvaihtoehdot
+    * Valitse uusi koulutus: alasvetovalikosta valitaan koulutus (id/taito/pakka/häiriö/toisto)
+  * Uuden taito-, paikka tai häiriövaihtoehdon lisäys
+    * Syötä haluttu uusi taito, paikka tai häiriö
+    * Syötön jälkeen, päivitä koulutusvaihtoehdot päivittää valittaviin koulutuksiin näistä syntyvät yhdistelmät.
+
+	
+	
+## Releasee note 1.0 
+
+	Tässä vaiheessa sovellukseen on toteutettu kaikki suunniteltu toiminnallisuus. 
+
+Suunniteltuja toiminnallisuuksia ei ole toteuttamatta, ja testauksen perusteella ohjelma toimii kuten tarkoitettu. 
+  * Mahdolliset tulevat kehitysvaiheet ovat:
+    * bugikorjauksia
+    * Html- ja CSS-parannuksia
+    * mahdollisesti käytettävyyteen liittyviä asioita
 	
 
