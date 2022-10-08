@@ -11,9 +11,9 @@ default_places =    ["koti", \
                     "metsä"\
 ]
 
-default_disturbances =  ["toinen koira",\
+default_disturbances =  ["ei häiriötä",\
                         "leikkivät lapset",\
-                        "auto"\
+                        "toinen koira"\
                         ]
 
 default_target_repeats = 10
