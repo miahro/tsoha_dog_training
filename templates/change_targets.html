@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
+{% if plan_items %}
 <h2> Käyttäjän {{session.user_name}} koira {{session.dog_name}}:</h2>
 
 <p>Valittu koulutus {{plan_items.id}}</p>
@@ -34,7 +35,7 @@
 <form action="/modify_plan" method="get">
     Ei muutosta <input type="submit", value="Palaa">
 </form>
-  
+{% endif %}
 
 
 

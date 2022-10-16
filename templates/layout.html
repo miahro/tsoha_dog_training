@@ -41,7 +41,15 @@ Kirjautunut käyttäjä: {{session.user_name}}
     Koiraa ei valittu
     {% endif %}
 </p>
- 
+
+{% if error_message %}
+<hr>
+<div class="error">
+Virhe: {{error_message}}
+</div>
+
+{% endif %}
+
 <hr>
 
 {% block content %}{% endblock %}

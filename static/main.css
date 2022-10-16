@@ -27,6 +27,10 @@ nav li {
     margin: .2em;
 }
 
+.error {
+    color: red
+}
+
 .header {
     background: gainsboro;
     font-weight: bold;
