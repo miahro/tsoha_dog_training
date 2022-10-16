@@ -37,7 +37,8 @@ def register():
     if request.method == "POST": #POST to submit registration details
         username = request.form["username"]
         if not check_length(username, 1, 20):
-            return render_template("/register.html", error_message="Tunnuksessa tulee olla 1-20 merkkiä")
+            return render_template("/register.html",\
+                    error_message="Tunnuksessa tulee olla 1-20 merkkiä")
         password1 = request.form["password1"]
         password2 = request.form["password2"]
         if password1 != password2:
@@ -55,8 +56,8 @@ def dogs():
         return render_template("/dogs.html", error_message="Et ole kirjautunut sisään")
     user_id = users.user_id()
     dognames = dog.list_dogs(user_id)
-    if len(dognames)==0:
-        dognames is None
+#    if len(dognames)==0:
+#        dognames is None
     return render_template("dogs.html", dogs=dognames)
 
 @app.route("/add_dog", methods =["GET", "POST"])
@@ -68,12 +69,14 @@ def add_dog():
     if request.method == "POST":
         users.csrf_check()
         name = request.form["dogname"]
-        if len(name) < 1 or len(name)>20:
-            return render_template("add_dog.html", error_message="Koiran nimessä tulee olla 1-20 merkkiä")
+        if not check_length(name, 1, 20):
+            return render_template("add_dog.html",\
+                    error_message="Koiran nimessä tulee olla 1-20 merkkiä")
         if dog.add_dog_name(name, users.user_id()):
             dognames = dog.list_dogs(session["user_id"])
             return render_template("/dogs.html", dogs=dognames, msg="Koiran lisäys onnistui")
-        return render_template("/add_dog.html", error_message="käyttäjällä ei voi olla kahta samannimistä koiraa")
+        return render_template("/add_dog.html",\
+                error_message="käyttäjällä ei voi olla kahta samannimistä koiraa")
 
 
 @app.route("/dogchoice/<int:dog_id>", methods =["GET"])
@@ -84,7 +87,7 @@ def dogchoice(dog_id):
         if users.user_id() != dog.get_owner(dog_id):
             abort(403) #should only happen if user is manually sets address for other dog than own
             #hence abort should be justified action
-            # rather than raising non-fatal error 
+            # rather than raising non-fatal error
         session["dog_id"]=dog_id
         session["dog_name"]=dog.get_name(dog_id)
         return redirect("/markprogress")
@@ -115,6 +118,7 @@ def markprogress():
         return render_template("/markprogress.html", progress=prog, plan_progress=plan_progress,\
                 total_progress=total_progress, msg="Koulutus kuitattu tehdyksi")
 
+
 @app.route("/modify_plan", methods=["GET", "POST"])
 def modify_plan():
     if not users.is_logged_in():
@@ -122,7 +126,6 @@ def modify_plan():
     dog_id = dog.get_dog_id()
     if dog_id is None:
         return render_template("/modify_plan.html", error_message="Koiraa ei valittu")
-#    dog_id = dog.get_dog_id()
     plan_progress = dog.plan_progress(dog_id)
     hidden_items = dog.hidden_items(dog_id)
     if request.method =="GET":
@@ -134,17 +137,20 @@ def modify_plan():
         if change_item == "skill":
             newskill=request.form["newskill"].lower()
             if not check_length(newskill, 1, 30):
-                return render_template("/modify_plan.html", plan_progress=plan_progress, error_message="Taidossa tulee olla 1-30 merkkiä") 
+                return render_template("/modify_plan.html", plan_progress=plan_progress,\
+                            error_message="Taidossa tulee olla 1-30 merkkiä")
             plan.add_skill(newskill)
         elif change_item == "place":
             newplace=request.form["newplace"].lower()
             if not check_length(newplace, 1, 30):
-                return render_template("/modify_plan.html", plan_progress=plan_progress, error_message="Paikassa tulee olla 1-30 merkkiä") 
+                return render_template("/modify_plan.html", plan_progress=plan_progress,\
+                        error_message="Paikassa tulee olla 1-30 merkkiä")
             plan.add_place(newplace)
         elif change_item == "disturbance":
             newdisturbance=request.form["newdisturbance"].lower()
             if not check_length(newdisturbance, 1, 30):
-                return render_template("/modify_plan.html", plan_progress=plan_progress, error_message="Häiriössä tulee olla 1-30 merkkiä") 
+                return render_template("/modify_plan.html", plan_progress=plan_progress,\
+                        error_message="Häiriössä tulee olla 1-30 merkkiä")
             plan.add_disturbance(newdisturbance)
         elif change_item == "targets":
             plan_id=int(request.form["targets"])
@@ -152,19 +158,7 @@ def modify_plan():
             if newtarget == 0:
                 dog.remove_from_plan(plan_id)
             else:
-                dog.change_plan_targets(plan_id, newtarget)               
-
-    #        plan_items = dog.get_plan_items(plan_id)
-   #         return render_template("/change_targets.html", plan_items=plan_items)
-   #     elif change_item =="target_change":
-    #        print("miten ihmeessä tähän tullaan?")
-    #        newtarget = int(request.form["newtarget"])
-    #        plan_id = int(request.form["plan_id"])
-    #        if newtarget == 0:
-    #            dog.remove_from_plan(plan_id)
-                #plan_items = dog.get_plan_items(plan_id)
-     #       else:
-     #           dog.change_plan_targets(plan_id, newtarget)
+                dog.change_plan_targets(plan_id, newtarget)
         elif change_item == "add_training":
             add_training_id = int(request.form["add_training"])
             dog.add_new_item(add_training_id)
@@ -177,26 +171,6 @@ def modify_plan():
         return render_template("/modify_plan.html",hidden_items=hidden_items,\
                 plan_progress=plan_progress, msg="Koulutusohjelman muokkaus tehty onnistuneesti")
 
-# @app.route("/change_targets", methods=["GET", "POST"])
-# def change_targets(plan_items=None):
-#     if not users.is_logged_in():
-#         return render_template("/change_targets.html", error_message="Et ole kirjaunut sisään")
-#     dog_id = dog.get_dog_id()
-#     if dog_id is None:
-#         return render_template("/change_targets.html", error_message="Koiraa ei valittu")
-#     if not session.get("plan_id"):
-#         return render_template("/change_targets.html", error_message="Koulutusta ei valittu")
-#     plan_id = session["plan_id"]
-#     items = dog.get_plan_items(plan_id)
-#     if request.method == "GET":
-#         return render_template("/change_targets.html", plan_items=items)
-#     if request.method == "POST":
-#         users.csrf_check()
-#         repeats = int(request.form["repeats"])
-#         #if repeats == 0:
-#         #    print("tullaanko tähän?")
-#         #    dog.remove_from_plan(plan_id)
-#         return render_template("/change_targets.html", plan_items=items)
 
 def check_length(text, min_len, max_len):
     return len(text)>= min_len and len(text) <= max_len
