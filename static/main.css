@@ -1,9 +1,18 @@
+
+html {
+    background-image: url(/static/dog2.jpg);
+    background-repeat: repeat;
+    background-size: 40%;
+}
+
+
 body {
+
     margin: auto;
     background: darkgray;
     max-width: 75em;
     font-family: 'Helvetica', 'Arial', sans-serif;
-    background: lightgray;
+    background: lightgray; 
 }
 
 .big_select {
