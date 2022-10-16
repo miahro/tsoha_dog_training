@@ -3,17 +3,20 @@
 <h2> Käyttäjän {{session.user_name}} koiran {{session.dog_name}} koulutusohjelman muokkaus:</h2>
 <p><b>Muuta koirakohtaisen suunnitelman tavoitemääriä</b></p>
 
-<label for="targets">Valitse koulutus (id | taito | paikka | häiriö | tavoitemäärä):</label>
+<label for="targets">Valitse koulutus (id | taito | paikka | häiriö | tavoitemäärä) ja anna uusi tavoite. Anna nolla poistaaksesi koulutuksen:</label>
 <form action="/modify_plan" method="post">
     Koulutus<select name="targets" id="targets">
     {% for x in plan_progress %}
         <option value={{x.id}}> {{x.id}} | {{x.skill}} | {{x.place}}  | {{x.disturbance}} | {{x.target_repeats}}</option>
     {% endfor %}
     </select><br>
-    <input type="submit" value="Valitse koulutus">
+    Uusi tavoite <input type="number" name="newtarget" required min="0" max="1000"> <br>
+    <input type="submit", value="Uusi tavoite">
     <input type="hidden" name="change_item" value="targets">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
 </form>
+
+
 
 <p><b>Lisää uusi koulutus</b></p>
 {% if hidden_items %}
@@ -43,21 +46,21 @@
     
 <p><b>Uuden taito-, paikka- tai häiriövaihtoehdon lisäys:</b></p>
 <form action="/modify_plan" method="post">
-    Taito <br><input type="text" name="newskill" minlength="1" maxlength="30"> <br>
+    Taito <br><input type="text" name="newskill" required minlength="1" maxlength="30"> <br>
     <input type="submit" value="Lisää taito">
     <input type="hidden" name="change_item" value="skill">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
 <form action="/modify_plan" method="post">
-    Paikka <br><input type="text" name="newplace" minlength="1" maxlength="30"> <br>
+    Paikka <br><input type="text" name="newplace" required minlength="1" maxlength="30"> <br>
     <input type="submit" value="Lisää paikka">
     <input type="hidden" name="change_item" value="place">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
 <form action="/modify_plan" method="post">
-    Häiriö <br><input type="text" name="newdisturbance" minlength="1" maxlength="30"> <br>
+    Häiriö <br><input type="text" name="newdisturbance" required minlength="1" maxlength="30"> <br>
     <input type="submit" value="Lisää häiriö">
     <input type="hidden" name="change_item" value="disturbance">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
