@@ -11,7 +11,7 @@
       <option value={{item.id}}> {{item.id}} | {{item.skill}} | {{item.place}}  | {{item.disturbance}} | {{item.repeated}} | {{item.target_repeats}}</option>
     {% endfor %}
     </select><br>
-  Toistojen määrä <input name="repeats" type="number" value="0" mix="-1000" max="1000"/><br><br>
+  Toistojen määrä <input name="repeats" type="number" value="0" required mix="-1000" max="1000"/><br><br>
   <input type="submit" value="Kuittaa koulutus">
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
 </form>

@@ -24,7 +24,7 @@
 <p>Anna uusi tavoite tai anna nolla poistaaksesi kokonaan suunnitelmasta</p>
 
 <form action="/modify_plan" method="post">
-    Uusi tavoite <input type="number" name="newtarget" min="0" max="1000"> <br>
+    Uusi tavoite <input type="number" name="newtarget" required min="0" max="1000"> <br>
     <input type="submit", value="Uusi tavoite">
     <input type="hidden" name="change_item" value="target_change">
     <input type="hidden" name="plan_id" value="{{plan_items.id}}">
