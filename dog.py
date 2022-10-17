@@ -137,12 +137,15 @@ def remove_from_plan(plan_id):
 
 
 def change_plan_targets(plan_id, newtarget):
-    sql = '''UPDATE Plan
-            SET target_repeats=:newtarget
-            WHERE Plan.id=:plan_id
-          '''
-    db.session.execute(sql, {"plan_id":plan_id, "newtarget":newtarget})
-    db.session.commit()
+    if newtarget==0:
+        remove_from_plan(plan_id)
+    else:
+        sql = '''UPDATE Plan
+                SET target_repeats=:newtarget
+                WHERE Plan.id=:plan_id
+            '''
+        db.session.execute(sql, {"plan_id":plan_id, "newtarget":newtarget})
+        db.session.commit()
     return True
 
 def add_new_item(plan_id):

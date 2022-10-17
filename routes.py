@@ -56,8 +56,6 @@ def dogs():
         return render_template("/dogs.html", error_message="Et ole kirjautunut sisään")
     user_id = users.user_id()
     dognames = dog.list_dogs(user_id)
-#    if len(dognames)==0:
-#        dognames is None
     return render_template("dogs.html", dogs=dognames)
 
 @app.route("/add_dog", methods =["GET", "POST"])
@@ -82,7 +80,7 @@ def add_dog():
 @app.route("/dogchoice/<int:dog_id>", methods =["GET"])
 def dogchoice(dog_id):
     if not users.is_logged_in():
-        return render_template("dogchoice/<int:dog_id>", error_message="Et ole kirjatunut sisään")
+        return render_template("dogchoice/<int:dog_id>", error_message="Et ole kirjautunut sisään")
     if request.method =="GET":
         if users.user_id() != dog.get_owner(dog_id):
             abort(403) #should only happen if user is manually sets address for other dog than own
@@ -155,17 +153,12 @@ def modify_plan():
         elif change_item == "targets":
             plan_id=int(request.form["targets"])
             newtarget = int(request.form["newtarget"])
-            if newtarget == 0:
-                dog.remove_from_plan(plan_id)
-            else:
-                dog.change_plan_targets(plan_id, newtarget)
+            dog.change_plan_targets(plan_id, newtarget)
         elif change_item == "add_training":
             add_training_id = int(request.form["add_training"])
             dog.add_new_item(add_training_id)
         elif change_item == "update_selection":
             plan.update_selection(dog_id)
-        else:
-            return render_template("/modify_plan.html", error_message="Tunnistamaton virhe")
         plan_progress = dog.plan_progress(dog_id)
         hidden_items = dog.hidden_items(dog_id)
         return render_template("/modify_plan.html",hidden_items=hidden_items,\
