@@ -45,7 +45,9 @@ Kirjautunut käyttäjä: {{session.user_name}}
 {% if error_message %}
 <hr>
 <div class="error">
-Virhe: {{error_message}}
+{% for error in error_message %}
+Virhe: {{error}}<br>
+{% endfor %}
 </div>
 
 {% endif %}

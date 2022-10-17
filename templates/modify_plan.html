@@ -43,24 +43,24 @@
     <input type="hidden" name="change_item" value="update_selection">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">    
 </form>
-    
+
 <p><b>Uuden taito-, paikka- tai häiriövaihtoehdon lisäys:</b></p>
 <form action="/modify_plan" method="post">
-    Taito <br><input type="text" name="newskill" required minlength="1" maxlength="30"> <br>
+    Taito <br><input type="text" name="newitem" required minlength="1" maxlength="30"> <br>
     <input type="submit" value="Lisää taito">
     <input type="hidden" name="change_item" value="skill">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
 <form action="/modify_plan" method="post">
-    Paikka <br><input type="text" name="newplace" required minlength="1" maxlength="30"> <br>
+    Paikka <br><input type="text" name="newitem" required minlength="1" maxlength="30"> <br>
     <input type="submit" value="Lisää paikka">
     <input type="hidden" name="change_item" value="place">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
 <form action="/modify_plan" method="post">
-    Häiriö <br><input type="text" name="newdisturbance" required minlength="1" maxlength="30"> <br>
+    Häiriö <br><input type="text" name="newitem" required  minlength="1" maxlength="30"> <br>
     <input type="submit" value="Lisää häiriö">
     <input type="hidden" name="change_item" value="disturbance">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

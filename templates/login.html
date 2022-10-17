@@ -4,8 +4,8 @@
 <h2>Kirjautuminen </h2>
 
 <form action="/login" method="POST">
-Tunnus: <input type="text" name="username"> 
-Salasana: <input type="password" name="password"> <br>
+Tunnus: <input type="text" name="username" required minlength="1" maxlength="20"> 
+Salasana: <input type="password" name="password" required minlength="1" maxlength="20"> <br>
 <input type="submit" value="Kirjaudu">
 </form>
 
