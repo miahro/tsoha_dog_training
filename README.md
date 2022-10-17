@@ -22,8 +22,8 @@ Sovelluksella on seuraavat ominaisuudet:
 ## Heroku linkki ##
 https://tsoha-dog-training.herokuapp.com/ 
 
-## Alustava tietokanta-skeema ##
-Alustavana suunnitelmana tietokanta sisältää 7 taulua:
+## Tietokanta-skeema ##
+Tietokanta sisältää 7 taulua:
   * Users; käyttäjätiedot
   * Dogs; koirat
   * Skills; harjoiteltavat taidot
@@ -43,16 +43,14 @@ Sovellus on jaettu seuraaviin moduleihin:
     * db.py: tietokannan polun ja tietokannan määrittely
     * defaults.py: oletussuunnitelman oletustiedot (taidot, paikat, häiriöt). Vain yksinkertaisia tekstimuotoisia listoja + lukutietoa. Eri tiedostossa, jotta muokkaus on helpompaa ja varsinaiset Python-kooditiedostot eivät pitene tarpeettomasti
   * html-pohjat
-    * laytout.html: sivun tyylitiedosto
+    * layout.html: sivun tyylitiedosto
     * index.html: etusivu
     * register.html: uuden käyttäjätunnuksen luonti
     * login.html: sisäänkirjautumissivu
-    * error.html: yleinen virhesivu, eri virheet ohjataan tänne virhespesifillä viestillä
     * add_dog.html: uuden koiran lisäys
     * dogs.html: käyttäjän koirien listaus
     * markprogress.html: koiran koulutuksen raportointi- ja kuittausnäkymä 
     * modify_plan.html: koulutussuunnitelman muokkausnäkymä
-    * change_targets.html: tavoitetoistomäärien muokkausnäkymä
   * CSS-pohja
     * main.css
   * SQL-skeema:
@@ -101,14 +99,7 @@ Sovellus on jaettu seuraaviin moduleihin:
 
 	
 	
-## Releasee note 1.0 
+## Releasee note 1.1 
 
-	Tässä vaiheessa sovellukseen on toteutettu kaikki suunniteltu toiminnallisuus. 
-
-Suunniteltuja toiminnallisuuksia ei ole toteuttamatta, ja testauksen perusteella ohjelma toimii kuten tarkoitettu. 
-  * Mahdolliset tulevat kehitysvaiheet ovat:
-    * bugikorjauksia
-    * Html- ja CSS-parannuksia
-    * mahdollisesti käytettävyyteen liittyviä asioita
-	
+	Tässä vaiheessa sovellukseen on toteutettu kaikki suunniteltu toiminnallisuus. Palautteena saadut korjausehdotukset on myös toteutettu. 
 
